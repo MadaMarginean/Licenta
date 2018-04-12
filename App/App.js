@@ -4,8 +4,8 @@ import { DrawerNavigator } from 'react-navigation';
 
 import { Container, Content, Icon } from 'native-base';
 
-import Main from './Main';
-import Main2 from './Main2';
+import Home from './components/main-components/Home';
+import Recipes from './components/main-components/Recipes';
 import DrawerIcon from './components/utils/DrawerIcon';
 import ImageHeader from './components/utils/ImageHeader';
 
@@ -13,14 +13,14 @@ const MyApp = DrawerNavigator(
   {
     Home: {
       path: '/',
-      screen: Main,
+      screen: Home,
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="home" size={24} />),
       }
     },
     Recipes: {
       path: '/sec',
-      screen: Main2,
+      screen: Recipes,
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="list" size={24} />),
       }

@@ -1,2 +1,0 @@
-http://www.themealdb.com/api/json/v1
-http://www.themealdb.com/images/ingredients/

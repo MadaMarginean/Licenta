@@ -1,8 +1,44 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 import GridView from 'react-native-super-grid';
 
+// import { STTandroid, STTios } from 'react-native-speech-to-text';
+
 export default class Example extends Component {
+  state = {
+    data: []
+  }
+
+  componentWillMount() {
+    fetch('http://192.168.0.101:4000/meals')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              data: json,
+              loaded: true
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
+  }
+
+  onPressButton = () => {
+   console.log('APASAT');
+
+   // STTandroid.showGoogleInputDialog()
+   //     .then((result) => {
+   //         console.log(result)
+   //     })
+   //     .catch((error) => {
+   //         console.log(error)
+   //     })
+
+ }
+
   render() {
     // Taken from https://flatuicolors.com/
     const items = [
@@ -21,13 +57,19 @@ export default class Example extends Component {
     return (
       <GridView
         itemDimension={130}
-        items={items}
+        items={this.state.data}
         style={styles.gridView}
         renderItem={item => (
-          <View style={[styles.itemContainer, { backgroundColor: item.code }]}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemCode}>{item.code}</Text>
-          </View>
+          <TouchableHighlight onPress={this.onPressButton}>
+            <View style={styles.itemContainer}>
+              <Image
+                source={{ uri: item.strMealThumb }}
+                style={styles.itemContainer}
+                />
+              <Text style={styles.itemName}>{item.strMeal}</Text>
+              <Text style={styles.itemCode}>{item.strArea}</Text>
+            </View>
+          </TouchableHighlight>
         )}
       />
     );
