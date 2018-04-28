@@ -13,11 +13,11 @@ export default class Recipes extends Component {
       <Container>
         <MainHeader navigation={this.props.navigation}/>
         <Content contentContainerStyle={styles.content}>
-        <Image
-          source={Logo}
-          style={{marginTop: 0}}
-        />
-        <Example />
+          <Image
+            source={Logo}
+            style={{marginTop: 0}}
+          />
+          <Example navigation={this.props.navigation}/>
         </Content>
       </Container>
     );

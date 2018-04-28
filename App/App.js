@@ -3,11 +3,13 @@ import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 import { DrawerNavigator } from 'react-navigation';
 
 import { Container, Content, Icon } from 'native-base';
+import { Router, Scene } from 'react-native-router-flux';
 
 import Home from './components/main-components/Home';
 import Recipes from './components/main-components/Recipes';
 import DrawerIcon from './components/utils/DrawerIcon';
 import ImageHeader from './components/utils/ImageHeader';
+import MealPage from './components/main-components/MealPage';
 
 const MyApp = DrawerNavigator(
   {
@@ -23,7 +25,15 @@ const MyApp = DrawerNavigator(
       screen: Recipes,
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="list" size={24} />),
-      }
+      },
+    },
+    Details: {
+      path: '/details',
+      screen: MealPage,
+      navigationOptions: {
+        drawerIcon: () => null,
+        drawerLabel: () => null
+      },
     },
   },
   {

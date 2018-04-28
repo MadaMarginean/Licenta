@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 import GridView from 'react-native-super-grid';
+import { Actions } from 'react-native-router-flux';
 
+// import SpeechAndroid from 'react-native-android-voice';
+// import {TextToSpeech} from 'react-native-watson';
+// import Tts from 'react-native-tts';
+// import AndroidTextToSpeech from 'react-native-tts';
+// import Speech from 'react-native-speech';
+// import Voice from 'react-native-voice';
 // import { STTandroid, STTios } from 'react-native-speech-to-text';
 
 export default class Example extends Component {
@@ -10,7 +17,7 @@ export default class Example extends Component {
   }
 
   componentWillMount() {
-    fetch('http://192.168.0.101:4000/meals')
+    fetch('http://192.168.0.102:4000/meals')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {
@@ -26,17 +33,9 @@ export default class Example extends Component {
       });
   }
 
-  onPressButton = () => {
-   console.log('APASAT');
-
-   // STTandroid.showGoogleInputDialog()
-   //     .then((result) => {
-   //         console.log(result)
-   //     })
-   //     .catch((error) => {
-   //         console.log(error)
-   //     })
-
+  onPressButton(item) {
+   // console.log('APASAT', item);
+   this.props.navigation.navigate('Details', { meal: item });
  }
 
   render() {
@@ -53,6 +52,10 @@ export default class Example extends Component {
       { name: 'PUMPKIN', code: '#d35400' }, { name: 'POMEGRANATE', code: '#c0392b' },
       { name: 'SILVER', code: '#bdc3c7' }, { name: 'ASBESTOS', code: '#7f8c8d' },
     ];
+    //
+    // let call = (async () => {
+    //     await this.onPressButton();
+    // })();
 
     return (
       <GridView
@@ -60,7 +63,8 @@ export default class Example extends Component {
         items={this.state.data}
         style={styles.gridView}
         renderItem={item => (
-          <TouchableHighlight onPress={this.onPressButton}>
+          <TouchableHighlight
+            onPress={this.onPressButton.bind(this, item)}>
             <View style={styles.itemContainer}>
               <Image
                 source={{ uri: item.strMealThumb }}
