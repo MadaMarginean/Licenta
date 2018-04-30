@@ -6,13 +6,47 @@ import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header
 
 import MainHeader from '../utils/Header';
 import IngredientsTab from './IngredientsTab';
+import Logo from '../../assets/purpleLogoText.png';
 
 export default class MealPage extends Component {
   constructor(props) {
     super(props);
   }
 
+  state = {ingredients: []};
+
+  getIngredients(meal) {
+    var ingred = Object.keys(meal).map(function(key) {
+      if ( meal[key] !== "" && key.includes("strIngredient")){
+        return meal[key];
+      }
+    }).filter(function( element ) {
+      return element !== undefined;
+    });
+
+    // this.setState({ingredients: ingred});
+    // console.log("st", this.state.ingredients)
+
+
+    // console.log("tifOptions", tifOptions);
+     // for (let j = 0; j < parseMeal.length; j++) {
+     //   console.log("!", JSON.stringify(parseMeal[j].value));
+     // }
+    //        if (JSON.stringify(selectedFrequency[j].value) === 'Daily')
+    // let ingredients = [];
+    // let a;
+    // for (let j = 0; j < meal.length; j++) {
+    //       if (meal[j].value === "Carrots") {
+    //         console.log(meal[j]);
+    //         ingredients.push(meal[j].value);
+    //       }
+    // }
+    // return ingredients;
+  }
+
   render() {
+    let props = this.props.navigation.state.params;
+    console.log("INGR ", this.state.ingredients);
     return (
       <HeaderImageScrollView
         maxHeight={200}
@@ -25,9 +59,14 @@ export default class MealPage extends Component {
         )}
       >
         <View style={{ height: 1000 }}>
-          <TriggeringView onHide={() => console.log('text hidden')} >
+          <TriggeringView onHide={() => console.log("...")} >
             <Text style={styles.title}>{props.meal.strMeal}</Text>
             <Text style={styles.subtitle}>Ingredients: </Text>
+            <TouchableHighlight
+              style={styles.button}
+              onPress={() => this.getIngredients.bind(this, props.meal)}>
+                <Text style={styles.textButton}>Gather your family to the meal with our recipes!</Text>
+            </TouchableHighlight>
           </TriggeringView>
         </View>
      </HeaderImageScrollView>
