@@ -24,7 +24,7 @@
     "prop-types": "^15.6.1",
     "react": "16.2.0",
     "react-native": "0.52.0",
-    "react-native-android-voice": "^0.6.0",
+    "react-native-android-voice": "github:niftytushar/react-native-android-voice",
     "react-native-animatable": "^1.2.4",
     "react-native-image-header-scroll-view": "^0.8.2",
     "react-native-material-ui": "^1.22.3",

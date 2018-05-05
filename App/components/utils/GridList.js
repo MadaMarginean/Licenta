@@ -12,40 +12,49 @@ import { Actions } from 'react-native-router-flux';
 // import { STTandroid, STTios } from 'react-native-speech-to-text';
 
 export default class Example extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   state = {
-    data: []
+    ingredients: [],
+    m: {},
+    measure: []
   }
 
-  componentWillMount() {
-    fetch('http://192.168.0.105:4000/meals')
-      .then(response => {
-        if (response.ok) {
-          response.json().then(json => {
-            this.setState({
-              data: json,
-              loaded: true
-            })
-          });
-        }
-        else {
-          console.log("NU");
-        }
-      });
-  }
+  onPressButton(meal) {
+    var ingred = Object.keys(meal).map(function(key) {
+      if ( meal[key] !== "" && key.includes("strIngredient")){
+        return meal[key];
+      }
+    }).filter(function( element ) {
+      return element !== undefined;
+    });
 
-  onPressButton(item) {
-   this.props.navigation.navigate('Details', { meal: item });
- }
+    var meas = Object.keys(meal).map(function(key) {
+      if ( meal[key] !== "" && key.includes("strMeasure")){
+        return meal[key];
+      }
+    }).filter(function( element ) {
+      return element !== undefined;
+    });
+
+    this.setState({ingredients: ingred, m: meal, measure: meas}, function () {
+             this.props.navigation.navigate('Details',
+             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure });
+        });
+}
 
   render() {
     // let call = (async () => {
     //     await this.onPressButton();
     // })();
+    let data = this.props.data;
 
     return (
       <GridView
         itemDimension={130}
-        items={this.state.data}
+        items={data}
         style={styles.gridView}
         renderItem={item => (
           <TouchableHighlight

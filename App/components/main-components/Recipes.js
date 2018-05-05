@@ -8,6 +8,27 @@ import Logo from '../../assets/purpleLogoText.png';
 import Example from '../utils/GridList';
 
 export default class Recipes extends Component {
+  state = {
+    data: []
+  }
+
+  componentWillMount() {
+    fetch('http://192.168.1.123:4000/meals')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              data: json,
+              loaded: true
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
+  }
+
   render() {
     return (
       <Container>
@@ -17,7 +38,7 @@ export default class Recipes extends Component {
             source={Logo}
             style={{marginTop: 0}}
           />
-          <Example navigation={this.props.navigation}/>
+          <Example navigation={this.props.navigation} data={this.state.data}/>
         </Content>
       </Container>
     );
