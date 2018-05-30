@@ -22,13 +22,13 @@ export default class Example extends Component {
     measure: []
   }
 
-  onPressButton(meal) {
+  onPressButton(meal, bck) {
     var ingred = Object.keys(meal).map(function(key) {
       if ( meal[key] !== "" && key.includes("strIngredient")){
         return meal[key];
       }
     }).filter(function( element ) {
-      return element !== undefined;
+      return element !== undefined && element !== null;
     });
 
     var meas = Object.keys(meal).map(function(key) {
@@ -36,12 +36,12 @@ export default class Example extends Component {
         return meal[key];
       }
     }).filter(function( element ) {
-      return element !== undefined;
+      return element !== undefined && element !== null;
     });
 
     this.setState({ingredients: ingred, m: meal, measure: meas}, function () {
              this.props.navigation.navigate('Details',
-             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure });
+             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure, back: bck});
         });
 }
 
@@ -50,7 +50,7 @@ export default class Example extends Component {
     //     await this.onPressButton();
     // })();
     let data = this.props.data;
-
+    // console.log("favvv", this.props.favList);
     return (
       <GridView
         itemDimension={130}
@@ -58,7 +58,7 @@ export default class Example extends Component {
         style={styles.gridView}
         renderItem={item => (
           <TouchableHighlight
-            onPress={this.onPressButton.bind(this, item)}>
+            onPress={this.onPressButton.bind(this, item, this.props.back)}>
             <View style={styles.itemContainer}>
               <Image
                 source={{ uri: item.strMealThumb }}

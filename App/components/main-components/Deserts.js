@@ -7,13 +7,13 @@ import MainHeader from '../utils/Header';
 import Logo from '../../assets/purpleLogoText.png';
 import Example from '../utils/GridList';
 
-export default class Recipes extends Component {
+export default class Deserts extends Component {
   state = {
     data: []
   }
 
   componentWillMount() {
-    fetch('http://192.168.1.123:4000/meals')
+    fetch('http://192.168.1.123:4000/deserts')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {

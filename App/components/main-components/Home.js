@@ -28,7 +28,7 @@ export default class Home extends Component {
 
   render() {
     let { fadeAnim } = this.state;
-    
+
     return (
       <Container>
         <MainHeader navigation={this.props.navigation}/>

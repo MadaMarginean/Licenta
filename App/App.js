@@ -4,9 +4,12 @@ import { DrawerNavigator } from 'react-navigation';
 
 import { Container, Content, Icon } from 'native-base';
 import { Router, Scene } from 'react-native-router-flux';
+import { NavigationActions } from 'react-navigation';
 
 import Home from './components/main-components/Home';
 import Recipes from './components/main-components/Recipes';
+import Deserts from './components/main-components/Deserts';
+import MyList from './components/main-components/MyList';
 import DrawerIcon from './components/utils/DrawerIcon';
 import ImageHeader from './components/utils/ImageHeader';
 import MealPage from './components/main-components/MealPage';
@@ -21,10 +24,25 @@ const MyApp = DrawerNavigator(
       }
     },
     Recipes: {
-      path: '/sec',
+      path: '/recipes',
       screen: Recipes,
+      key: 'R',
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="list" size={24} />),
+      },
+    },
+    Deserts: {
+      path: '/deserts',
+      screen: Deserts,
+      navigationOptions: {
+        drawerIcon: () => (<DrawerIcon iconName="ios-arrow-dropright" size={24} />),
+      },
+    },
+    MyList: {
+      path: '/mylist',
+      screen: MyList,
+      navigationOptions: {
+        drawerIcon: () => (<DrawerIcon iconName="ios-star" size={24} />),
       },
     },
     Details: {
