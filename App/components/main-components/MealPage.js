@@ -6,14 +6,24 @@ import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header
 import { Constants, Speech, Video, ImagePicker} from 'expo';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import PopoverTooltip from 'react-native-popover-tooltip';
+import CheckboxGroup from 'react-native-checkbox-group';
+import Accordion from 'react-native-collapsible/Accordion';
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import * as AddCalendarEvent from 'react-native-add-calendar-event';
 
 import MainHeader from '../utils/Header';
 import AddComment from '../utils/AddComment';
 import IngredientsTab from './IngredientsTab';
 import DrawerIcon from '../utils/DrawerIcon';
 
-export default class MealPage extends Component {
+const SECTIONS = [
+  {
+    title: 'First',
+    content: 'Shop List'
+  },
+];
 
+export default class MealPage extends Component {
   state = {
     language: "en",
     text: "Vegetable Stock",
@@ -125,8 +135,43 @@ export default class MealPage extends Component {
   //   }
   // }
 
-  changeComment(comment) {
-    this.setState({comment});
+  _renderHeader(section) {
+    return (
+      <View style={styles.headerr}>
+        <Text style={styles.headerText}>Shop List</Text>
+      </View>
+    );
+  }
+
+  _renderContent(ingredients, measure, section) {
+    return (
+      <View>
+      {ingredients.map((data, index) => (
+        <CheckboxGroup
+          key={index}
+          callback={(selected) => { console.log(selected) }}
+          iconColor={"#893667"}
+          iconSize={20}
+          checkedIcon="ios-checkbox-outline"
+          uncheckedIcon="ios-square-outline"
+          checkboxes={[
+            {
+              label: ` ${data} - ${measure[index]}`,
+              value: index, // selected value for item, if selected, what value should be sent?
+              // selected: true // if the item is selected by default or not.
+            },
+          ]}
+          labelStyle={{
+            color: '#333'
+          }}
+          rowStyle={{
+            flexDirection: 'row'
+          }}
+          rowDirection={"column"}
+        />
+      ))}
+      </View>
+    )
   }
 
   render() {
@@ -156,7 +201,7 @@ export default class MealPage extends Component {
         scrollEnabled={true}
         keyboardDismissMode='on-drag'
       >
-        <View style={{ height: 2000 }}>
+        <View style={{ height: 1200 }}>
           <TriggeringView onHide={() => console.log("...")} >
 
             <View style={styles.ingredientsContainer}>
@@ -199,11 +244,17 @@ export default class MealPage extends Component {
                <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>My list</Text>
              </View>
           </TouchableOpacity>
+          <AirbnbRating />
+          <View>
+            <Accordion
+               sections={SECTIONS}
+               renderHeader={this._renderHeader.bind(this)}
+               renderContent={this._renderContent.bind(this, props.ingredients, props.measure)}
+             />
+          </View>
           <AddComment idMeal={props.meal.idMeal} />
           </View>
           : null}
-
-
       </HeaderImageScrollView>
     );
   }
@@ -300,4 +351,13 @@ const styles = StyleSheet.create({
     width: 250,
     marginTop: 0
   },
+  headerr: {
+   backgroundColor: '#424242',
+   padding: 10
+ },
+ headerText: {
+   textAlign: 'center',
+   fontSize: 16,
+   fontWeight: '500'
+ },
 });

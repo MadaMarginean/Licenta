@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -9,10 +9,12 @@ import {
   TouchableOpacity,
   AsyncStorage,
   Image,
-  setInterval
+  ScrollView,
+  FlatList
 } from 'react-native';
 import { Constants, Speech, Video, ImagePicker} from 'expo';
 import Accordion from 'react-native-collapsible/Accordion';
+import Lightbox from 'react-native-lightbox';
 
 const SECTIONS = [
   {
@@ -79,14 +81,6 @@ class AddComment extends Component {
     this.setState({
       curTime: fullTime
     });
-  }
-
-  changeTitle(title) {
-    this.setState({title});
-  }
-
-  changeSubtitle(subtitle) {
-    this.setState({subtitle});
   }
 
   changeComment(comment) {
@@ -215,16 +209,27 @@ class AddComment extends Component {
   }
 
   _renderContent(section) {
+    let color;
     if(this.state.commList) {
       return this.state.commList.map((data, i) => {
         return (
           <View key={i} style={styles.dataList}>
-            <View style={{width: 280}}>
+            <View style={{width: 350, backgroundColor: i%2==0 ? '#F0F0F0' : '#FFFFFF', position: 'relative'}}>
+            <View style={{width: 280, backgroundColor: i%2==0 ? '#F0F0F0' : '#FFFFFF'}}>
               <Text style={{fontWeight: 'bold', fontSize: 16}}>NAme</Text>
               <Text>{data.comment}</Text>
-              <Image source={{uri: data.image}} style={{width:60, height:60}} />
-            </View>
-            <View style={{height:32, width: 70, marginLeft: 280, marginTop: -40}}>
+              </View>
+                <Lightbox
+                activeProps={{
+                    resizeMode: 'contain',
+                    source: { uri: data.image },
+                    style: { flex: 1, width: null, height: null }
+                }}
+                >
+                  <Image resizeMode="cover" source={{uri: data.image}} style={{width:60, height:60}} />
+                </Lightbox>
+              </View>
+            <View style={{height:40, width: 70, marginLeft: 280, marginTop: 0, backgroundColor: i%2==0 ? '#F0F0F0' : '#FFFFFF', position: 'absolute'}}>
               <Text>{data.time}</Text>
             </View>
           </View>
@@ -235,14 +240,14 @@ class AddComment extends Component {
   render() {
     return (
       <View style={styles.container}>
-      <View>
-      <Accordion
-         sections={SECTIONS}
-         // renderSectionTitle={this._renderSectionTitle.bind(this)}
-         renderHeader={this._renderHeader.bind(this)}
-         renderContent={this._renderContent.bind(this)}
-       />
-    </View>
+        <View>
+          <Accordion
+             sections={SECTIONS}
+             // renderSectionTitle={this._renderSectionTitle.bind(this)}
+             renderHeader={this._renderHeader.bind(this)}
+             renderContent={this._renderContent.bind(this)}
+           />
+        </View>
         <View>
           <Text style={styles.title}>Add a comment</Text>
           <TextInput
@@ -274,7 +279,6 @@ class AddComment extends Component {
               <Text style={styles.textButton}>Add</Text>
           </TouchableHighlight>
         </View>
-
       </View>
     );
   }
@@ -285,7 +289,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#893667',
     paddingTop: 15,
     paddingBottom: 15
   },
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
     marginTop: 70
   },
   header: {
-   backgroundColor: '#F5FCFF',
+   backgroundColor: '#893667',
    padding: 10
  },
  headerText: {
@@ -355,9 +359,9 @@ const styles = StyleSheet.create({
    padding: 10
  },
  dataList: {
-  marginBottom: 5,
-  marginTop: 5,
-  marginLeft: 5
+  // marginBottom: 5,
+  // marginTop: 5,
+  marginLeft: 5,
  },
 })
 
