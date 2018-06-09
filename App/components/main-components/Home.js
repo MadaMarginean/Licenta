@@ -2,6 +2,7 @@ import React, { Component} from 'react';
 import { StyleSheet, Text, View, TouchableHighlight, Image, Animated, ListItem, List } from 'react-native';
 
 import { Container, Content, Icon } from 'native-base';
+import * as firebase from 'firebase';
 
 import MainHeader from '../utils/Header';
 import DrawerIcon from '../utils/DrawerIcon';
@@ -28,7 +29,7 @@ export default class Home extends Component {
 
   render() {
     let { fadeAnim } = this.state;
-
+    
     return (
       <Container>
         <MainHeader navigation={this.props.navigation}/>

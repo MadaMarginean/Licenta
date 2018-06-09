@@ -2,6 +2,7 @@ import React, { Component} from 'react';
 import { StyleSheet, Text, View, ScrollView, Image, Button } from 'react-native';
 
 import { Icon, Container, Content, Header, Left } from 'native-base';
+import { SearchBar } from 'react-native-elements';
 
 import MainHeader from '../utils/Header';
 import Logo from '../../assets/purpleLogoText.png';
@@ -13,7 +14,7 @@ export default class Recipes extends Component {
   }
 
   componentWillMount() {
-    fetch('http://192.168.1.123:4000/meals')
+    fetch('http://192.168.0.102:4000/meals')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {
@@ -29,6 +30,10 @@ export default class Recipes extends Component {
       });
   }
 
+  method() {
+    console.log('!!!');
+  }
+
   render() {
     return (
       <Container>
@@ -38,6 +43,12 @@ export default class Recipes extends Component {
             source={Logo}
             style={{marginTop: 0}}
           />
+          <View style={{width: 300}}>
+          <SearchBar
+            onChangeText={this.method()}
+            onClear={this.method()}
+            placeholder='Type Here...' />
+            </View>
           <Example
             navigation={this.props.navigation}
             data={this.state.data}

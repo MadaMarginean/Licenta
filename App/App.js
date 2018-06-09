@@ -6,6 +6,8 @@ import { Container, Content, Icon } from 'native-base';
 import { Router, Scene } from 'react-native-router-flux';
 import { NavigationActions } from 'react-navigation';
 
+import * as firebase from 'firebase';
+
 import Home from './components/main-components/Home';
 import Recipes from './components/main-components/Recipes';
 import Deserts from './components/main-components/Deserts';
@@ -13,6 +15,8 @@ import MyList from './components/main-components/MyList';
 import DrawerIcon from './components/utils/DrawerIcon';
 import ImageHeader from './components/utils/ImageHeader';
 import MealPage from './components/main-components/MealPage';
+import Login from './components/main-components/Login';
+import Register from './components/main-components/Register';
 
 const MyApp = DrawerNavigator(
   {
@@ -45,6 +49,22 @@ const MyApp = DrawerNavigator(
         drawerIcon: () => (<DrawerIcon iconName="ios-star" size={24} />),
       },
     },
+    Login: {
+      path: '/login',
+      screen: Login,
+      navigationOptions: {
+        drawerIcon: () => null,
+        drawerLabel: () => null
+      },
+    },
+    Register: {
+      path: '/register',
+      screen: Register,
+      navigationOptions: {
+        drawerIcon: () => null,
+        drawerLabel: () => null
+      },
+    },
     Details: {
       path: '/details',
       screen: MealPage,
@@ -70,6 +90,19 @@ const MyApp = DrawerNavigator(
 );
 
 export default class App extends React.Component {
+  componentWillMount() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxrxKL6CRq8UDDbC0wQ6ZusdooYGp4v8w",
+      authDomain: "mobile-applications-e8da2.firebaseapp.com",
+      databaseURL: "https://mobile-applications-e8da2.firebaseio.com",
+      projectId: "mobile-applications-e8da2",
+      storageBucket: "mobile-applications-e8da2.appspot.com",
+      messagingSenderId: "447954818796"
+    }
+
+    firebase.initializeApp(firebaseConfig);
+  }
+
   render() {
     return (
       <MyApp />
