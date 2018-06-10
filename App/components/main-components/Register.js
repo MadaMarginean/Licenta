@@ -13,6 +13,7 @@ import { Router, Scene, Actions } from 'react-native-router-flux';
 import { Icon } from 'native-base';
 
 import * as firebase from 'firebase';
+import { Permissions, Notifications } from 'expo';
 
 class Register extends Component {
   constructor() {
@@ -33,6 +34,32 @@ class Register extends Component {
   componentWillMount() {
     let userPath = "/BusinessClient";
     let data = firebase.database().ref(userPath);
+  }
+
+  // componentDidMount() {
+  //   this.registerForPushNotifications();
+  // }
+
+  registerForPushNotifications = async() => {
+    //check if permission exists
+    const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = status;
+
+    //if it doesn't exist
+    if(status !== 'garanted') {
+      const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    if(status !== 'garanted') {
+      return ;
+    }
+
+    let token = await Notifications.getExpoPushTokenAsync();
+    let uid = firebase.auth().currentUser.uid;
+    firebase.database().ref("/Users").child(uid).update({
+      expoPushToken: token
+    });
   }
 
   checkBusiness(email, password) {
@@ -65,6 +92,22 @@ class Register extends Component {
               { cancelable: false }
             )
         });
+
+    // var database = firebase.database();
+    // var ref = database.ref('/Users');
+    //
+    // let a={email: this.state.email,
+    //       password: this.state.password,
+    //       token: this.registerForPushNotifications()}
+    //
+    // if (a.email && a.password && a.token) {
+    //   ref.push(a);
+    // }
+
+  }
+
+  skip() {
+    this.props.navigation.navigate('Home', {isLogged: false});
   }
 
   renderCurrentState() {
@@ -88,6 +131,12 @@ class Register extends Component {
               style={styles.buttonSingIn}
               onPress={() => this.buttonRegister()}>
                 <Text style={styles.singIn}>Register</Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              style={{alignItems: 'center', marginTop: 120}}
+              onPress={() => this.skip()}
+            >
+              <Text style={styles.auth}>Start without authentication</Text>
             </TouchableHighlight>
           </View>
       );
@@ -128,7 +177,9 @@ const styles = StyleSheet.create({
     auth: {
       color: '#424242',
       fontWeight: 'bold',
-      fontSize: 16
+      fontSize: 16,
+      alignItems: 'center',
+      marginLeft: 20,
     },
     contain:
     {

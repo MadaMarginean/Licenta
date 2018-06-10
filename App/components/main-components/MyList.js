@@ -1,7 +1,8 @@
 import React, { Component} from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, Button, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, Button, AsyncStorage, Alert } from 'react-native';
 
 import { Icon, Container, Content, Header, Left } from 'native-base';
+import * as firebase from 'firebase';
 
 import MainHeader from '../utils/Header';
 import Logo from '../../assets/purpleLogoText.png';
@@ -13,11 +14,26 @@ export default class MyList extends Component {
   }
 
   componentWillMount() {
+    let uid = firebase.auth().currentUser.uid;
     try{
-      AsyncStorage.getItem(`myListt`).then((value) => {
-        this.setState({
-          data: JSON.parse(value)
-        })
+      AsyncStorage.getItem(`myList_${uid}`).then((value) => {
+        if (value !== null) {
+          this.setState({
+            data: JSON.parse(value)
+          })
+        }
+        else {
+          Alert.alert(
+            'Empty list',
+            'You can add a recipe.',
+            [
+              {text: 'Add recipe', onPress: () => this.navigate()},
+              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+              {text: 'OK', onPress: () => console.log('OK Pressed')},
+            ],
+            { cancelable: false }
+          )
+        }
       })
     }
     catch(err) {
@@ -25,10 +41,14 @@ export default class MyList extends Component {
     }
   }
 
+  navigate() {
+    this.props.navigation.navigate('Recipes');
+  }
+
   // componentWillUpdate(nextProps, nextState) {
   //   if (nextState.data != this.state.data) {
   //     try{
-  //       AsyncStorage.getItem(`myListt`).then((value) => {
+  //       AsyncStorage.getItem(`myList_${uid}`).then((value) => {
   //         this.setState({
   //           data: JSON.parse(value)
   //         })

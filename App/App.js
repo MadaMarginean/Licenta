@@ -12,6 +12,7 @@ import Home from './components/main-components/Home';
 import Recipes from './components/main-components/Recipes';
 import Deserts from './components/main-components/Deserts';
 import MyList from './components/main-components/MyList';
+import MyFridge from './components/main-components/MyFridge';
 import DrawerIcon from './components/utils/DrawerIcon';
 import ImageHeader from './components/utils/ImageHeader';
 import MealPage from './components/main-components/MealPage';
@@ -39,7 +40,7 @@ const MyApp = DrawerNavigator(
       path: '/deserts',
       screen: Deserts,
       navigationOptions: {
-        drawerIcon: () => (<DrawerIcon iconName="ios-arrow-dropright" size={24} />),
+        drawerIcon: () => (<DrawerIcon iconName="ios-ice-cream" size={24} />),
       },
     },
     MyList: {
@@ -47,6 +48,13 @@ const MyApp = DrawerNavigator(
       screen: MyList,
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="ios-star" size={24} />),
+      },
+    },
+    MyFridge: {
+      path: '/myfridge',
+      screen: MyFridge,
+      navigationOptions: {
+        drawerIcon: () => (<DrawerIcon iconName="ios-square-outline" size={24} />),
       },
     },
     Login: {

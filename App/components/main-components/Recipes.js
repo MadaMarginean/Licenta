@@ -10,7 +10,9 @@ import Example from '../utils/GridList';
 
 export default class Recipes extends Component {
   state = {
-    data: []
+    data: [],
+    searchText: '',
+    dataSource: []
   }
 
   componentWillMount() {
@@ -20,7 +22,8 @@ export default class Recipes extends Component {
           response.json().then(json => {
             this.setState({
               data: json,
-              loaded: true
+              loaded: true,
+              dataSource: json
             })
           });
         }
@@ -30,9 +33,23 @@ export default class Recipes extends Component {
       });
   }
 
-  method() {
-    console.log('!!!');
+  empty() {
+    console.log('empty');
+    // this.setState({searchText: ''})
   }
+
+  searchFilterFunction(text){
+     const newData = this.state.data.filter(function(item){
+       const itemData = item.strMeal.toLowerCase()
+       const textData = text.toLowerCase()
+         return itemData.search(textData) !== -1;
+     })
+
+     this.setState({
+         dataSource: newData,
+         searchText: text
+     })
+ }
 
   render() {
     return (
@@ -44,14 +61,14 @@ export default class Recipes extends Component {
             style={{marginTop: 0}}
           />
           <View style={{width: 300}}>
-          <SearchBar
-            onChangeText={this.method()}
-            onClear={this.method()}
-            placeholder='Type Here...' />
-            </View>
+            <SearchBar
+              onChangeText={(text)=>this.searchFilterFunction(text)}
+              onClear={this.empty()}
+              placeholder='Type Here...' />
+          </View>
           <Example
             navigation={this.props.navigation}
-            data={this.state.data}
+            data={this.state.dataSource}//{this.state.data}
             back={this.props.navigation.state.routeName}
           />
         </Content>

@@ -13,6 +13,7 @@ import { Router, Scene, Actions } from 'react-native-router-flux';
 import { Icon } from 'native-base';
 
 import * as firebase from 'firebase';
+import { Permissions, Notifications } from 'expo';
 
 class Login extends Component {
   constructor() {
@@ -49,10 +50,37 @@ class Login extends Component {
               });
   }
 
+  // componentDidMount() {
+  //   this.registerForPushNotifications();
+  // }
+
+  registerForPushNotifications = async() => {
+    //check if permission exists
+    const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = status;
+
+    //if it doesn't exist
+    if(status !== 'granted') {
+      const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+    console.log('final status', finalStatus);
+    if(status !== 'granted') {
+      return ;
+    }
+    let token = await Notifications.getExpoPushTokenAsync();
+    let uid = firebase.auth().currentUser.uid;
+    firebase.database().ref("/BusinessClient").child(uid).update({
+      email: this.state.email,
+      password: this.state.password,
+      expoPushToken: token
+    });
+  }
+
   checkBusiness(email, password) {
     // this.state.businessClients.map((item) => {item.email == email && item.password == password ?
     //   Actions.home({user: 'business'}) : Actions.home({user: 'personal'})});
-      this.props.navigation.navigate('Home', {isLogged: true});
+    this.props.navigation.navigate('Home', {isLogged: true});
   }
 
   changeEmail(email) {
@@ -70,6 +98,7 @@ class Login extends Component {
             .then(() => {
                 this.setState({ error: '', authenticating: false });
                 this.checkBusiness(this.state.email, this.state.password);
+                // this.registerForPushNotifications();
             })
             .catch(() => {
               Alert.alert(
@@ -92,18 +121,18 @@ class Login extends Component {
   }
 
   async buttonFacebook() {
-    // let {type, token} = awayt Expo.Facebook.logInWithReadPermissionsAsync(
-    // '1058001241030936', { permissions: ['public_profile'] })
-    //
-    //   if (type === 'success') {
-    //   // Get the user's name using Facebook's Graph API
-    //   const response = await fetch(
-    //     `https://graph.facebook.com/me?access_token=${token}`);
-    //   Alert.alert(
-    //     'Logged in!',
-    //     `Hi ${(await response.json()).name}!`,
-    //   );
-    // }
+    let {type, token} = await Expo.Facebook.logInWithReadPermissionsAsync(
+    '1058001241030936', { permissions: ['public_profile'] })
+
+      if (type === 'success') {
+      // Get the user's name using Facebook's Graph API
+      const response = await fetch(
+        `https://graph.facebook.com/me?access_token=${token}`);
+      Alert.alert(
+        'Logged in!',
+        `Hi ${(await response.json()).name}!`,
+      );
+    }
   }
 
   authenticate() {
@@ -111,7 +140,32 @@ class Login extends Component {
   }
 
   skip() {
-    this.props.navigation.navigate('Home', {isLogged: false});
+    let headers = {
+      'accept': 'application/json',
+      'accept-encoding': 'gzip, deflate',
+      'content-type': 'application/json'
+    }
+
+    let data = {
+      "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
+      "sound": "default",
+      "body": "Hello world!"
+    };
+
+    return fetch('https://exp.host/--/api/v2/push/send', {
+     method: "POST",
+     headers: headers,
+     body:  JSON.stringify(data)
+   })
+   .then(function(response){
+     console.log("Its connected");
+     return response.json();
+     // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
+   })
+   .then(function(data){
+    console.log(data);
+  });
+    // this.props.navigation.navigate('Home', {isLogged: false});
   }
 
   renderCurrentState() {

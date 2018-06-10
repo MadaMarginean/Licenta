@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableHighlight, TouchableOpacity, Image, ListItem, List, Button, Dimensions, WebView, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, Alert, TextInput, View, TouchableHighlight, TouchableOpacity, Image, ListItem, List, Button, Dimensions, WebView, AsyncStorage } from 'react-native';
 
 import { Icon, Container, Content, Header, Left, Tab, Tabs, ScrollableTab } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
@@ -10,6 +10,7 @@ import CheckboxGroup from 'react-native-checkbox-group';
 import Accordion from 'react-native-collapsible/Accordion';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
+import * as firebase from 'firebase';
 
 import MainHeader from '../utils/Header';
 import AddComment from '../utils/AddComment';
@@ -87,21 +88,40 @@ export default class MealPage extends Component {
     console.log("click");
     arrayData.push(data);
     var destinationArray;
+    let uid = firebase.auth().currentUser.uid;
+    let sem = 1;
     try {
-      AsyncStorage.getItem(`myListt`).then((value) => {
+      AsyncStorage.getItem(`myList_${uid}`).then((value) => {
         if (value !== null) {
           const d = JSON.parse(value);
-          d.push(data);
-          let p = [];
-          AsyncStorage.setItem(`myListt`, JSON.stringify(d)).then(
-            () => {
-              destinationArray = Array.from(d);
-              this.setState({list: arrayData});
-          })
+          d.map(i => i.strMeal === data.strMeal ? sem = 0 : console.log('sem in map',sem));
+
+          console.log('sem',sem);
+          if(sem === 0) {
+            Alert.alert(
+              'This recipe already exists in My list.',
+              'A recipe can be added only once.',
+              [
+                // {text: 'Add recipe', onPress: () => this.navigate()},
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              { cancelable: false }
+            )
+          }
+          else {
+            d.push(data);
+            let p = [];
+            AsyncStorage.setItem(`myList_${uid}`, JSON.stringify(d)).then(
+              () => {
+                destinationArray = Array.from(d);
+                this.setState({list: arrayData});
+            })
+          }
         }
         else {
           let p = [];
-          AsyncStorage.setItem(`myListt`, JSON.stringify(arrayData))
+          AsyncStorage.setItem(`myList_${uid}`, JSON.stringify(arrayData))
             .then(() => {
               destinationArray = Array.from(arrayData);
               this.setState({list: arrayData});
@@ -123,7 +143,7 @@ export default class MealPage extends Component {
   //   this.setState({list: array});
   //
   //   try {
-  //     AsyncStorage.setItem(`myListt`, JSON.stringify(array))
+  //     AsyncStorage.setItem(`myList_${uid}`, JSON.stringify(array))
   //       .then(() => {
   //         // this.setState({list: array});
   //         this.props.navigation.navigate(back);
@@ -157,8 +177,8 @@ export default class MealPage extends Component {
           checkboxes={[
             {
               label: ` ${data} - ${measure[index]}`,
-              value: index, // selected value for item, if selected, what value should be sent?
-              // selected: true // if the item is selected by default or not.
+              value: index,
+              // selected: true
             },
           ]}
           labelStyle={{
