@@ -7,13 +7,18 @@ import {
     TextInput,
     TouchableHighlight,
     ActivityIndicator,
-    Alert
+    Alert,
+    Vibration
 } from 'react-native';
 import { Router, Scene, Actions } from 'react-native-router-flux';
 import { Icon } from 'native-base';
 
 import * as firebase from 'firebase';
 import { Permissions, Notifications } from 'expo';
+
+const DURATION = 10000 ;
+
+const PATTERN = [ 1000, 2000, 3000, 4000] ;
 
 class Register extends Component {
   constructor() {
@@ -108,6 +113,7 @@ class Register extends Component {
 
   skip() {
     this.props.navigation.navigate('Home', {isLogged: false});
+    // Vibration.vibrate(DURATION) ;
   }
 
   renderCurrentState() {

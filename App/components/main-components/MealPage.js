@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { StyleSheet, Text, Alert, TextInput, View, TouchableHighlight, TouchableOpacity, Image, ListItem, List, Button, Dimensions, WebView, AsyncStorage } from 'react-native';
+import { StyleSheet, Vibration, Text, Alert, TextInput, View, TouchableHighlight, TouchableOpacity, Image, ListItem, List, Button, Dimensions, WebView, AsyncStorage } from 'react-native';
 
 import { Icon, Container, Content, Header, Left, Tab, Tabs, ScrollableTab } from 'native-base';
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
@@ -12,6 +12,7 @@ import { Rating, AirbnbRating } from 'react-native-ratings';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import * as firebase from 'firebase';
 import Toast, {DURATION} from 'react-native-easy-toast';
+import { Permissions, Notifications } from 'expo';
 
 import MainHeader from '../utils/Header';
 import AddComment from '../utils/AddComment';
@@ -24,6 +25,10 @@ const SECTIONS = [
     content: 'Shop List'
   },
 ];
+
+// const DURATION = 10000 ;
+
+const PATTERN = [ 1000, 2000, 3000, 4000] ;
 
 export default class MealPage extends Component {
   state = {
@@ -84,7 +89,7 @@ export default class MealPage extends Component {
     }
   };
 
-  onPressButton(data) {
+  saveToFavList(data) {
     const arrayData = [];
     console.log("click");
     arrayData.push(data);
@@ -196,10 +201,45 @@ export default class MealPage extends Component {
     )
   }
 
+  setAlarm() {
+    this.refs.toast.show('Reminder saved');
+    setTimeout(() => this.alarm(), 10000)
+  }
+
+  alarm() {
+     Vibration.vibrate(10000) ;
+
+     let headers = {
+       'accept': 'application/json',
+       'accept-encoding': 'gzip, deflate',
+       'content-type': 'application/json'
+     }
+
+     let data = {
+       "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
+       "sound": "default",
+       "body": "Take out from oven!"
+     };
+
+     return fetch('https://exp.host/--/api/v2/push/send', {
+      method: "POST",
+      headers: headers,
+      body:  JSON.stringify(data)
+    })
+    .then(function(response){
+      console.log("Its connected");
+      return response.json();
+      // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
+    })
+    .then(function(data){
+     console.log(data);
+   });
+  }
+
   render() {
     let props = this.props.navigation.state.params;
     const { width } = Dimensions.get('window');
-    console.log("f>>", props.meal.idMeal);
+
     return (
       <HeaderImageScrollView
         maxHeight={200}
@@ -225,7 +265,6 @@ export default class MealPage extends Component {
       >
         <View style={{ height: 1200 }}>
           <TriggeringView onHide={() => console.log("...")} >
-
             <View style={styles.ingredientsContainer}>
               <Text style={styles.subtitle}>Ingredients: </Text>
               <View style={styles.ingredientsMeasure}>
@@ -257,37 +296,45 @@ export default class MealPage extends Component {
            </TriggeringView>
          </View>
          {props.back !== 'MyList' ?
-         <View>
-          <TouchableOpacity
-            onPress={() => this.onPressButton(props.meal)}
-            style={styles.favBtn}>
-             <View style={{marginLeft:6}}>
-               <DrawerIcon iconName="ios-star" size={24} iconColor='white'/>
-               <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>My list</Text>
-             </View>
-          </TouchableOpacity>
-          <Toast
-            ref="toast"
-            style={{backgroundColor:'black'}}
-            position='top'
-            positionValue={200}
-            fadeInDuration={750}
-            fadeOutDuration={1000}
-            opacity={0.8}
-            textStyle={{color:'white'}}
-          />
-          <AirbnbRating />
           <View>
-            <Accordion
-               sections={SECTIONS}
-               renderHeader={this._renderHeader.bind(this)}
-               renderContent={this._renderContent.bind(this, props.ingredients, props.measure)}
-             />
-          </View>
-          <AddComment idMeal={props.meal.idMeal} />
+            <TouchableOpacity
+              onPress={() => this.saveToFavList(props.meal)}
+              style={styles.favBtn}>
+               <View style={{marginLeft:6}}>
+                 <DrawerIcon iconName="ios-star" size={24} iconColor='white'/>
+                 <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>My list</Text>
+               </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setAlarm()}
+              style={styles.alarmBtn}>
+               <View style={{marginLeft:6}}>
+                 <DrawerIcon iconName="ios-alarm" size={24} iconColor='white'/>
+                 <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>Set timer</Text>
+               </View>
+            </TouchableOpacity>
+            <Toast
+              ref="toast"
+              style={{backgroundColor:'black'}}
+              position='top'
+              positionValue={200}
+              fadeInDuration={750}
+              fadeOutDuration={1000}
+              opacity={0.8}
+              textStyle={{color:'white'}}
+            />
+            <AirbnbRating />
+            <View>
+              <Accordion
+                 sections={SECTIONS}
+                 renderHeader={this._renderHeader.bind(this)}
+                 renderContent={this._renderContent.bind(this, props.ingredients, props.measure)}
+               />
+            </View>
+            <AddComment idMeal={props.meal.idMeal} />
           </View>
           : null}
-      </HeaderImageScrollView>
+        </HeaderImageScrollView>
     );
   }
 }
@@ -378,6 +425,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#893667',
     marginLeft: 250,
     marginTop: 20
+  },
+  alarmBtn: {
+    width: 105,
+    height: 50,
+    backgroundColor: '#893667',
+    marginLeft: 120,
+    marginTop: -50
   },
   ingredientsContainer: {
     width: 250,

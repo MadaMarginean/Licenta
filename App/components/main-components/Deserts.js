@@ -44,7 +44,6 @@ export default class Deserts extends Component {
        const textData = text.toLowerCase()
          return itemData.search(textData) !== -1;
      })
-
      this.setState({
          dataSource: newData,
          searchText: text
@@ -54,7 +53,7 @@ export default class Deserts extends Component {
   render() {
     return (
       <Container>
-        <MainHeader navigation={this.props.navigation}/>
+        <MainHeader navigation={this.props.navigation} />
         <Content contentContainerStyle={styles.content}>
           <Image
             source={Logo}

@@ -7,7 +7,8 @@ import {
     TextInput,
     TouchableHighlight,
     ActivityIndicator,
-    Alert
+    Alert,
+    Vibration,
 } from 'react-native';
 import { Router, Scene, Actions } from 'react-native-router-flux';
 import { Icon } from 'native-base';
@@ -50,9 +51,6 @@ class Login extends Component {
               });
   }
 
-  // componentDidMount() {
-  //   this.registerForPushNotifications();
-  // }
 
   registerForPushNotifications = async() => {
     //check if permission exists
@@ -140,32 +138,32 @@ class Login extends Component {
   }
 
   skip() {
-    let headers = {
-      'accept': 'application/json',
-      'accept-encoding': 'gzip, deflate',
-      'content-type': 'application/json'
-    }
-
-    let data = {
-      "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
-      "sound": "default",
-      "body": "Hello world!"
-    };
-
-    return fetch('https://exp.host/--/api/v2/push/send', {
-     method: "POST",
-     headers: headers,
-     body:  JSON.stringify(data)
-   })
-   .then(function(response){
-     console.log("Its connected");
-     return response.json();
-     // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
-   })
-   .then(function(data){
-    console.log(data);
-  });
-    // this.props.navigation.navigate('Home', {isLogged: false});
+  //   let headers = {
+  //     'accept': 'application/json',
+  //     'accept-encoding': 'gzip, deflate',
+  //     'content-type': 'application/json'
+  //   }
+  //
+  //   let data = {
+  //     "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
+  //     "sound": "default",
+  //     "body": "Hello world!"
+  //   };
+  //
+  //   return fetch('https://exp.host/--/api/v2/push/send', {
+  //    method: "POST",
+  //    headers: headers,
+  //    body:  JSON.stringify(data)
+  //  })
+  //  .then(function(response){
+  //    console.log("Its connected");
+  //    return response.json();
+  //    // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
+  //  })
+  //  .then(function(data){
+  //   console.log(data);
+  // });
+    this.props.navigation.navigate('Home', {isLogged: false});
   }
 
   renderCurrentState() {
