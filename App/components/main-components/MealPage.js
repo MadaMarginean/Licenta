@@ -11,6 +11,7 @@ import Accordion from 'react-native-collapsible/Accordion';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import * as firebase from 'firebase';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 import MainHeader from '../utils/Header';
 import AddComment from '../utils/AddComment';
@@ -109,7 +110,8 @@ export default class MealPage extends Component {
               { cancelable: false }
             )
           }
-          else {
+          else{
+            this.refs.toast.show('Saved');
             d.push(data);
             let p = [];
             AsyncStorage.setItem(`myList_${uid}`, JSON.stringify(d)).then(
@@ -264,6 +266,16 @@ export default class MealPage extends Component {
                <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>My list</Text>
              </View>
           </TouchableOpacity>
+          <Toast
+            ref="toast"
+            style={{backgroundColor:'black'}}
+            position='top'
+            positionValue={200}
+            fadeInDuration={750}
+            fadeOutDuration={1000}
+            opacity={0.8}
+            textStyle={{color:'white'}}
+          />
           <AirbnbRating />
           <View>
             <Accordion
