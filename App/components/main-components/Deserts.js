@@ -16,7 +16,7 @@ export default class Deserts extends Component {
   }
 
   componentWillMount() {
-    fetch('http://192.168.0.102:4000/deserts')
+    fetch('http://192.168.1.123:4000/deserts')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {

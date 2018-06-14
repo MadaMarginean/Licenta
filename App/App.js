@@ -18,6 +18,8 @@ import ImageHeader from './components/utils/ImageHeader';
 import MealPage from './components/main-components/MealPage';
 import Login from './components/main-components/Login';
 import Register from './components/main-components/Register';
+import Soups from './components/main-components/Soups';
+import Contact from './components/main-components/Contact';
 
 const MyApp = DrawerNavigator(
   {
@@ -33,7 +35,7 @@ const MyApp = DrawerNavigator(
       screen: Recipes,
       key: 'R',
       navigationOptions: {
-        drawerIcon: () => (<DrawerIcon iconName="list" size={24} />),
+        drawerIcon: () => (<DrawerIcon iconName="ios-albums" size={24} />),
       },
     },
     Deserts: {
@@ -43,18 +45,33 @@ const MyApp = DrawerNavigator(
         drawerIcon: () => (<DrawerIcon iconName="ios-ice-cream" size={24} />),
       },
     },
+    Soups: {
+      path: '/soups',
+      screen: Soups,
+      navigationOptions: {
+        drawerIcon: () => (<DrawerIcon iconName="ios-cafe" size={24} />),
+      },
+    },
     MyList: {
       path: '/mylist',
       screen: MyList,
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="ios-star" size={24} />),
       },
+
     },
     MyFridge: {
       path: '/myfridge',
       screen: MyFridge,
       navigationOptions: {
-        drawerIcon: () => (<DrawerIcon iconName="ios-square-outline" size={24} />),
+        drawerIcon: () => (<DrawerIcon iconName="list" size={24} />),
+      },
+    },
+    Contact: {
+      path: '/contact',
+      screen: Contact,
+      navigationOptions: {
+        drawerIcon: () => (<DrawerIcon iconName="ios-mail" size={24} />),
       },
     },
     Login: {

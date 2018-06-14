@@ -38,7 +38,22 @@ export default class MealPage extends Component {
     pitch: 1,
     rate: 0.75,
     list: [],
+    fridgeList: [],
+    checked: []
   }
+
+  // componentWillMount() {
+  //   try{
+  //     AsyncStorage.getItem(`fridgeList`).then((value) => {
+  //       this.setState({
+  //         fridgeList: JSON.parse(value)
+  //       })
+  //     })
+  //   }
+  //   catch(err) {
+  //     console.log("Error!", err);
+  //   }
+  // }
 
   _buttonClick = async() => {
     try{
@@ -170,13 +185,37 @@ export default class MealPage extends Component {
     );
   }
 
+  // checkExistsInFridge(text) {
+  //   const newData = this.state.fridgeList.filter(function(item){
+  //     const itemData = item.ingredient.toLowerCase()
+  //     const textData = text.toLowerCase()
+  //         if(itemData.search(textData) !== -1) {
+  //           return true;
+  //         }
+  //         else {
+  //           return false;
+  //         }
+  //   }
+  // }
+
+
+  // componentDidMount() {
+  //   // console.log('vaaal', val, this.state.fridgeList, this.state.fridgeList.some(item => val === item.ingredient))
+  //     // props.ingredients.map((val, index) =>
+  //   this.setState({checked: this.props.navigation.state.params.ingredients.map((val, index) =>this.state.fridgeList.some(item => val === item.ingredient))})
+  // }
+  //
+  // updateChecked() {
+  //   this.setState({checked: this.props.navigation.state.params.ingredients.map((val, index) =>this.state.fridgeList.some(item => val === item.ingredient))})
+  // }
+
   _renderContent(ingredients, measure, section) {
     return (
       <View>
       {ingredients.map((data, index) => (
         <CheckboxGroup
           key={index}
-          callback={(selected) => { console.log(selected) }}
+          callback={(selected) => { console.log(selected, data, measure[index]) }}
           iconColor={"#893667"}
           iconSize={20}
           checkedIcon="ios-checkbox-outline"
@@ -185,7 +224,7 @@ export default class MealPage extends Component {
             {
               label: ` ${data} - ${measure[index]}`,
               value: index,
-              // selected: true
+              // selected: this.state.checked[index]//this.state.fridgeList.some(item => data === item.ingredient),
             },
           ]}
           labelStyle={{
@@ -203,7 +242,7 @@ export default class MealPage extends Component {
 
   setAlarm() {
     this.refs.toast.show('Reminder saved');
-    setTimeout(() => this.alarm(), 10000)
+    setTimeout(() => this.alarm(), 50000)
   }
 
   alarm() {
@@ -439,7 +478,7 @@ const styles = StyleSheet.create({
   },
   headerr: {
    backgroundColor: '#424242',
-   padding: 10
+   padding: 10,
  },
  headerText: {
    textAlign: 'center',

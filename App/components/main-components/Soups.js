@@ -8,7 +8,7 @@ import MainHeader from '../utils/Header';
 import Logo from '../../assets/purpleLogoText.png';
 import Example from '../utils/GridList';
 
-export default class Recipes extends Component {
+export default class Soups extends Component {
   state = {
     data: [],
     searchText: '',
@@ -16,7 +16,7 @@ export default class Recipes extends Component {
   }
 
   componentWillMount() {
-    fetch('http://192.168.1.123:4000/meals')
+    fetch('http://192.168.1.123:4000/soups')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {
@@ -44,7 +44,6 @@ export default class Recipes extends Component {
        const textData = text.toLowerCase()
          return itemData.search(textData) !== -1;
      })
-
      this.setState({
          dataSource: newData,
          searchText: text
@@ -54,7 +53,7 @@ export default class Recipes extends Component {
   render() {
     return (
       <Container>
-        <MainHeader navigation={this.props.navigation}/>
+        <MainHeader navigation={this.props.navigation} />
         <Content contentContainerStyle={styles.content}>
           <Image
             source={Logo}
@@ -68,7 +67,7 @@ export default class Recipes extends Component {
           </View>
           <Example
             navigation={this.props.navigation}
-            data={this.state.dataSource}//{this.state.data}
+            data={this.state.dataSource}
             back={this.props.navigation.state.routeName}
           />
         </Content>

@@ -60,7 +60,7 @@ export default class MainHeader extends Component {
           {this.props.navigation.state.routeName == 'Home' ?
           <Right>
             <Icon
-              name={this.state.isLogged===false ? 'ios-person' : 'ios-log-out'}
+              name={this.state.isLogged===false ? 'ios-contact' : 'ios-log-out'}
               style={{marginTop: 20}}
               onPress={() => this.state.isLogged===false ? this.signOutUser() : this.signInUser()}
             />
@@ -68,8 +68,8 @@ export default class MainHeader extends Component {
               onPress={() => this.state.isLogged===false ? this.signOutUser() : this.signInUser()}
             >
               {this.state.isLogged===false ?
-                <Text> Sing In</Text> :
-                <Text> Sing Out</Text>}
+                <Text> Sign In</Text> :
+                <Text> Sign Out</Text>}
             </TouchableOpacity>
           </Right> : null}
         </Header>

@@ -171,13 +171,13 @@ class Login extends Component {
         <View style={styles.contain}>
           <Text style={styles.title}>Login</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.inputText, styles.inputBody]}
               placeholder='Email'
               value={this.state.email}
               onChangeText={(email) => this.changeEmail(email)}
             />
             <TextInput
-              style={styles.input}
+              style={[styles.inputText, styles.inputBody]}
               placeholder='Password'
               value={this.state.password}
               secureTextEntry
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-    input: {
+    inputText: {
       paddingRight: 5,
       paddingLeft: 5,
       paddingBottom: 5,
