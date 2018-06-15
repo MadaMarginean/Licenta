@@ -42,18 +42,21 @@ export default class MealPage extends Component {
     checked: []
   }
 
-  // componentWillMount() {
-  //   try{
-  //     AsyncStorage.getItem(`fridgeList`).then((value) => {
-  //       this.setState({
-  //         fridgeList: JSON.parse(value)
-  //       })
-  //     })
-  //   }
-  //   catch(err) {
-  //     console.log("Error!", err);
-  //   }
-  // }
+  componentWillMount() {
+    fetch('http://192.168.1.123:4000/getFridgeIngr')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              fridgeList: json,
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
+  }
 
   _buttonClick = async() => {
     try{
@@ -73,7 +76,7 @@ export default class MealPage extends Component {
      this.state.inProgress && this.setState({ inProgress: false });
    };
 
-   Speech.speak(this.state.text, {
+   Speech.speak(this.props.navigation.state.params.meal.strInstructions, {
      language: this.state.language,
      pitch: this.state.pitch,
      rate: this.state.rate,
@@ -208,14 +211,43 @@ export default class MealPage extends Component {
   // updateChecked() {
   //   this.setState({checked: this.props.navigation.state.params.ingredients.map((val, index) =>this.state.fridgeList.some(item => val === item.ingredient))})
   // }
+  addToFridge(ingredient, quantity) {
+    var headers= {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+    }
+
+    var data = {
+      "idIngr": (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString(),
+      "ingr": ingredient,
+      "qty": quantity,
+     }
+
+     return fetch('http://192.168.1.123:4000/postFridgeIngr', {
+       method: "POST",
+       headers: headers,
+       body:  JSON.stringify(data)
+     })
+     .then(function(response){
+       console.log("Its connected");
+       this.refs.toast.show('Added to fridge list');
+       return response.json();
+       // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
+     }.bind(this))
+     .then(function(data){
+      console.log(data);
+    });
+  }
 
   _renderContent(ingredients, measure, section) {
+    console.log('ingr', this.state.fridgeList)
+    console.log('exista', ingredients.map((data, index) =>this.state.fridgeList.some(item => data === item.ingr)))
     return (
       <View>
       {ingredients.map((data, index) => (
         <CheckboxGroup
           key={index}
-          callback={(selected) => { console.log(selected, data, measure[index]) }}
+          callback={(selected) => this.addToFridge(data, measure[index])}
           iconColor={"#893667"}
           iconSize={20}
           checkedIcon="ios-checkbox-outline"
@@ -224,7 +256,7 @@ export default class MealPage extends Component {
             {
               label: ` ${data} - ${measure[index]}`,
               value: index,
-              // selected: this.state.checked[index]//this.state.fridgeList.some(item => data === item.ingredient),
+              selected: this.state.fridgeList.some(item => data === item.ingr),
             },
           ]}
           labelStyle={{
@@ -242,7 +274,7 @@ export default class MealPage extends Component {
 
   setAlarm() {
     this.refs.toast.show('Reminder saved');
-    setTimeout(() => this.alarm(), 50000)
+    setTimeout(() => this.alarm(), 10000)
   }
 
   alarm() {
@@ -257,7 +289,7 @@ export default class MealPage extends Component {
      let data = {
        "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
        "sound": "default",
-       "body": "Take out from oven!"
+       "body": "The user with the email address denisa.m@yahoo.com was authenticated."
      };
 
      return fetch('https://exp.host/--/api/v2/push/send', {
@@ -276,6 +308,7 @@ export default class MealPage extends Component {
   }
 
   render() {
+    // console.log('Instructions', this.props.navigation.state.params.meal.strInstructions)
     let props = this.props.navigation.state.params;
     const { width } = Dimensions.get('window');
 
@@ -315,7 +348,8 @@ export default class MealPage extends Component {
             <Button
             disabled={this.state.inProgress}
             onPress={this._speak}
-            title="Speak"
+            title="Listen the instructions"
+            color='#893667'
             />
             <Text style={styles.subtitle}>Instructions: </Text>
             <Text style={styles.ingredientsMeasure}>{props.meal.strInstructions}</Text>
@@ -431,6 +465,7 @@ const styles = StyleSheet.create({
   },
   ingredientsMeasure: {
     marginLeft: 10,
+    marginBottom: 10
   },
   header :{
         flex: 1,

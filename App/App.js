@@ -38,7 +38,7 @@ const MyApp = DrawerNavigator(
         drawerIcon: () => (<DrawerIcon iconName="ios-albums" size={24} />),
       },
     },
-    Deserts: {
+    Desert: {
       path: '/deserts',
       screen: Deserts,
       navigationOptions: {

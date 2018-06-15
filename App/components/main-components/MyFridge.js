@@ -1,8 +1,10 @@
 import React, { Component} from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, Image, TouchableHighlight, AsyncStorage } from 'react-native';
 import { Icon, Container, Content, Header, Left } from 'native-base';
+import { List, ListItem } from 'react-native-elements';
 
 import MainHeader from '../utils/Header';
+import DrawerIcon from '../utils/DrawerIcon';
 import Logo from '../../assets/purpleLogoText.png';
 
 export default class MyFridge extends Component {
@@ -14,79 +16,108 @@ export default class MyFridge extends Component {
   }
 
   componentWillMount() {
-    try{
-      AsyncStorage.getItem(`fridgeList`).then((value) => {
-        this.setState({
-          list: JSON.parse(value),
-          fridgeList: JSON.parse(value)
-        })
-      })
-    }
-    catch(err) {
-      console.log("Error!", err);
-    }
+    fetch('http://192.168.1.123:4000/getFridgeIngr')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              fridgeList: json,
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
+  }
+
+  fetchForUpdate = () => {
+    fetch('http://192.168.1.123:4000/getFridgeIngr')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              fridgeList: json,
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
   }
 
   addToFridge() {
-    const arrayData = [];
-    const data = {
-      ingredient: this.state.ingredient,
-      quantity: this.state.quantity,
+    var headers= {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
     }
-    arrayData.push(data);
-    var destinationArray;
-    this.fetch();
-    try {
-      AsyncStorage.getItem(`fridgeList`).then((value) => {
-        if (value !== null) {
-          const d = JSON.parse(value);
-          d.push(data);
-          let p = [];
-          AsyncStorage.setItem(`fridgeList`, JSON.stringify(d)).then(
-            () => {
-              destinationArray = Array.from(d);
-              this.setState({
-                              list: arrayData,
-                              fridgeList: arrayData,
-                              ingredient: '',
-                              quantity: '',
-                            });
-            })
-            this.fetch();
-        }
-        else {
-          let p = [];
-          AsyncStorage.setItem(`fridgeList`, JSON.stringify(arrayData))
-            .then(() => {
-              destinationArray = Array.from(arrayData);
-              this.setState({
-                              list: arrayData,
-                              fridgeList: arrayData,
-                              ingredient: '',
-                              quantity: '',
-                            });
-          })
-          this.fetch();
-        }
-      })
-    }
-    catch(err) {
-      console.log("The comment must have a comment text!");
-    }
-  }
 
-  fetch() {
-    try{
-      AsyncStorage.getItem(`fridgeList`).then((value) => {
-        this.setState({
-          list: JSON.parse(value),
-          fridgeList: JSON.parse(value)
-        })
-      })
-    }
-    catch(err) {
-      console.log("Error!", err);
-    }
+    var data = {
+      "idIngr": (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString(),
+      "ingr": this.state.ingredient,
+      "qty": this.state.quantity,
+   }
+
+   return fetch('http://192.168.1.123:4000/postFridgeIngr', {
+     method: "POST",
+     headers: headers,
+     body:  JSON.stringify(data)
+   })
+   .then(function(response){
+     this.fetchForUpdate();
+     console.log("Its connected");
+     return response.json();
+     // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
+   }.bind(this))
+   .then(function(data){
+    console.log(data);
+  });
+    // const arrayData = [];
+    // const data = {
+    //   ingredient: this.state.ingredient,
+    //   quantity: this.state.quantity,
+    // }
+    // arrayData.push(data);
+    // var destinationArray;
+    // this.fetch();
+    // try {
+    //   AsyncStorage.getItem(`fridgeList`).then((value) => {
+    //     if (value !== null) {
+    //       const d = JSON.parse(value);
+    //       d.push(data);
+    //       let p = [];
+    //       AsyncStorage.setItem(`fridgeList`, JSON.stringify(d)).then(
+    //         () => {
+    //           destinationArray = Array.from(d);
+    //           this.setState({
+    //                           list: arrayData,
+    //                           fridgeList: arrayData,
+    //                           ingredient: '',
+    //                           quantity: '',
+    //                         });
+    //         })
+    //         this.fetch();
+    //     }
+    //     else {
+    //       let p = [];
+    //       AsyncStorage.setItem(`fridgeList`, JSON.stringify(arrayData))
+    //         .then(() => {
+    //           destinationArray = Array.from(arrayData);
+    //           this.setState({
+    //                           list: arrayData,
+    //                           fridgeList: arrayData,
+    //                           ingredient: '',
+    //                           quantity: '',
+    //                         });
+    //       })
+    //       this.fetch();
+    //     }
+    //   })
+    // }
+    // catch(err) {
+    //   console.log("The comment must have a comment text!");
+    // }
   }
 
   changeIngredient(ingredient) {
@@ -97,16 +128,16 @@ export default class MyFridge extends Component {
     this.setState({quantity});
   }
 
-  parseData() {
-    if(this.state.fridgeList) {
-      return this.state.fridgeList.map((data, i) => {
-        return (
-          <ScrollView key={i} style={styles.dataList}>
-              <Text style={{fontWeight: 'bold', fontSize: 16}}>{data.ingredient} - {data.quantity}</Text>
-          </ScrollView>
-        )
-      })
-    }
+  deleteItem(id) {
+    return fetch(`http://192.168.1.123:4000/fridge/${id}`, {
+      method: 'DELETE'
+    }).then(function(response){
+        this.fetchForUpdate()
+        response.json()
+      }.bind(this))
+      .then(json => {
+        return json;
+      });
   }
 
   render() {
@@ -141,9 +172,20 @@ export default class MyFridge extends Component {
               onPress={() => this.addToFridge()}>
                 <Text style={styles.textButton}>Add</Text>
             </TouchableHighlight>
-            <View style={{backgroundColor: 'red', width: '100%'}}>
-              {this.parseData()}
-            </View>
+            <ScrollView>
+            {this.state.fridgeList.map((data, i) => (
+              <View key={i} style={styles.dataList}>
+                <Text style={{fontWeight: 'bold', fontSize: 18, width: 350, marginTop: 7}}>{data.ingr} - {data.qty}</Text>
+                <TouchableHighlight
+                  style={{width: 25, height:40, alignItems: 'center', justifyContent: 'center', marginLeft: 310, marginTop: -40}}
+                  onPress={() => this.deleteItem(data.idIngr)}
+                >
+                  <DrawerIcon iconName="ios-trash" size={12} />
+                </TouchableHighlight>
+              </View>
+            ))}
+              </ScrollView>
+
           </View>
         </Content>
       </Container>
@@ -199,8 +241,13 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   dataList: {
-   marginBottom: 5,
-   marginTop: 5,
-   marginLeft: 5,
+  // backgroundColor: 'red',
+   // marginBottom: 5,
+   // marginTop: 5,
+   borderBottomWidth: 0.5,
+   borderColor: 'grey',
+   marginLeft: 10,
+   marginRight: 10,
+   height: 30
   },
 });

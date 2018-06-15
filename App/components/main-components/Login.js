@@ -186,18 +186,7 @@ class Login extends Component {
             <TouchableHighlight
               style={styles.buttonSingIn}
               onPress={() => this.buttonLogin()}>
-                <Text style={styles.singIn}>Sing In</Text>
-            </TouchableHighlight>
-            <TouchableHighlight
-              style={styles.button}
-              onPress={() => this.buttonFacebook()}>
-                <View>
-                  <Text style={styles.textButton}>Sing In with Facebook</Text>
-                  <Icon
-                    name='logo-facebook'
-                    style={{ fontSize: 66, color: 'white', marginTop: -40}}
-                  />
-                </View>
+                <Text style={styles.singIn}>Sign In</Text>
             </TouchableHighlight>
             <TouchableHighlight
               style={{alignItems: 'center', marginTop: 120}}
