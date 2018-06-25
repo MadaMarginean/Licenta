@@ -98,16 +98,16 @@ class Register extends Component {
             )
         });
 
-    // var database = firebase.database();
-    // var ref = database.ref('/Users');
-    //
-    // let a={email: this.state.email,
-    //       password: this.state.password,
-    //       token: this.registerForPushNotifications()}
-    //
-    // if (a.email && a.password && a.token) {
-    //   ref.push(a);
-    // }
+    var database = firebase.database();
+    var ref = database.ref('/Users');
+
+    let a={email: this.state.email,
+          password: this.state.password,
+          }
+
+    if (a.email && a.password) {
+      ref.push(a);
+    }
 
   }
 

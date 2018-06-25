@@ -16,7 +16,7 @@ export default class MyFridge extends Component {
   }
 
   componentWillMount() {
-    fetch('http://192.168.1.123:4000/getFridgeIngr')
+    fetch('http://192.168.1.123:4000/getIngredientsInFridge')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {
@@ -32,7 +32,7 @@ export default class MyFridge extends Component {
   }
 
   fetchForUpdate = () => {
-    fetch('http://192.168.1.123:4000/getFridgeIngr')
+    fetch('http://192.168.1.123:4000/getIngredientsInFridge')
       .then(response => {
         if (response.ok) {
           response.json().then(json => {
@@ -48,18 +48,21 @@ export default class MyFridge extends Component {
   }
 
   addToFridge() {
+    let id = this.state.fridgeList && this.state.fridgeList.length > 0 ? (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString() : "0";
+
     var headers= {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
     }
+    // console.log("fridgeList", this.state.fridgeList && this.state.fridgeList.length > 0)
 
     var data = {
-      "idIngr": (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString(),
+      "idIngr": id,//this.state.fridgeList !== undefined ? (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString() : "0",
       "ingr": this.state.ingredient,
       "qty": this.state.quantity,
    }
 
-   return fetch('http://192.168.1.123:4000/postFridgeIngr', {
+   return fetch('http://192.168.1.123:4000/postIngredientsInFridge', {
      method: "POST",
      headers: headers,
      body:  JSON.stringify(data)
@@ -129,7 +132,7 @@ export default class MyFridge extends Component {
   }
 
   deleteItem(id) {
-    return fetch(`http://192.168.1.123:4000/fridge/${id}`, {
+    return fetch(`http://192.168.1.123:4000/fridgeDelete/${id}`, {
       method: 'DELETE'
     }).then(function(response){
         this.fetchForUpdate()

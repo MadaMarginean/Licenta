@@ -31,6 +31,12 @@ const SECTIONS = [
 const PATTERN = [ 1000, 2000, 3000, 4000] ;
 
 export default class MealPage extends Component {
+  // constructor() {
+  //   console.ignoredYellowBox = [
+  //     'Possible Unhandled Promise Rejection'
+  //   ];
+  // }
+
   state = {
     language: "en",
     text: "Vegetable Stock",
@@ -38,24 +44,8 @@ export default class MealPage extends Component {
     pitch: 1,
     rate: 0.75,
     list: [],
-    fridgeList: [],
+    fridgeList: this.props.navigation.state.params.fridgeList,
     checked: []
-  }
-
-  componentWillMount() {
-    fetch('http://192.168.1.123:4000/getFridgeIngr')
-      .then(response => {
-        if (response.ok) {
-          response.json().then(json => {
-            this.setState({
-              fridgeList: json,
-            })
-          });
-        }
-        else {
-          console.log("NU");
-        }
-      });
   }
 
   _buttonClick = async() => {
@@ -120,7 +110,6 @@ export default class MealPage extends Component {
           const d = JSON.parse(value);
           d.map(i => i.strMeal === data.strMeal ? sem = 0 : console.log('sem in map',sem));
 
-          console.log('sem',sem);
           if(sem === 0) {
             Alert.alert(
               'This recipe already exists in My list.',
@@ -211,43 +200,69 @@ export default class MealPage extends Component {
   // updateChecked() {
   //   this.setState({checked: this.props.navigation.state.params.ingredients.map((val, index) =>this.state.fridgeList.some(item => val === item.ingredient))})
   // }
+  fetchForUpdate = () => {
+    fetch('http://192.168.1.123:4000/getIngredientsInFridge')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              fridgeList: json,
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
+  }
+
   addToFridge(ingredient, quantity) {
+    let id = this.state.fridgeList && this.state.fridgeList.length > 0 ? (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString() : "0";
     var headers= {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
     }
 
     var data = {
-      "idIngr": (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString(),
+      "idIngr": id, //(parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString(),
       "ingr": ingredient,
       "qty": quantity,
      }
 
-     return fetch('http://192.168.1.123:4000/postFridgeIngr', {
+     return fetch('http://192.168.1.123:4000/postIngredientsInFridge', {
        method: "POST",
        headers: headers,
        body:  JSON.stringify(data)
      })
      .then(function(response){
-       console.log("Its connected");
        this.refs.toast.show('Added to fridge list');
+       this.fetchForUpdate();
        return response.json();
        // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
      }.bind(this))
      .then(function(data){
-      console.log(data);
+      console.log('second then', data);
     });
   }
 
+  checkChecked(ingredient, quantity) {
+    let sem = 0;
+    if(this.state.fridgeList.some(item => ingredient === item.ingr)) {
+      sem = 1;
+    }
+    else {
+      this.addToFridge(ingredient, quantity)
+    }
+  }
+
   _renderContent(ingredients, measure, section) {
-    console.log('ingr', this.state.fridgeList)
-    console.log('exista', ingredients.map((data, index) =>this.state.fridgeList.some(item => data === item.ingr)))
     return (
       <View>
       {ingredients.map((data, index) => (
         <CheckboxGroup
           key={index}
-          callback={(selected) => this.addToFridge(data, measure[index])}
+          callback={(selected) => this.checkChecked(data, measure[index])}///this.addToFridge(data, measure[index])}
+          onPress={() => console.log('apasat', data)}
           iconColor={"#893667"}
           iconSize={20}
           checkedIcon="ios-checkbox-outline"
@@ -298,7 +313,6 @@ export default class MealPage extends Component {
       body:  JSON.stringify(data)
     })
     .then(function(response){
-      console.log("Its connected");
       return response.json();
       // this.socket.onopen = () => this.socket.send(JSON.stringify({type: 'greet', payload: 'data'}));
     })
@@ -308,7 +322,6 @@ export default class MealPage extends Component {
   }
 
   render() {
-    // console.log('Instructions', this.props.navigation.state.params.meal.strInstructions)
     let props = this.props.navigation.state.params;
     const { width } = Dimensions.get('window');
 

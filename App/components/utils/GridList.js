@@ -19,7 +19,27 @@ export default class Example extends Component {
   state = {
     ingredients: [],
     m: {},
-    measure: []
+    measure: [],
+    fridgeList: [],
+  }
+
+  componentWillMount() {
+    fetch('http://192.168.1.123:4000/getIngredientsInFridge')
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              fridgeList: json,
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      })
+      .catch((er) => {
+        console.log('Error', er);
+      })
   }
 
   onPressButton(meal, bck) {
@@ -41,7 +61,7 @@ export default class Example extends Component {
 
     this.setState({ingredients: ingred, m: meal, measure: meas}, function () {
              this.props.navigation.navigate('Details',
-             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure, back: bck});
+             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure, back: bck, fridgeList: this.state.fridgeList});
         });
 }
 
