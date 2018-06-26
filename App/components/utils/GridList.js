@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 import GridView from 'react-native-super-grid';
 import { Actions } from 'react-native-router-flux';
+import * as firebase from 'firebase';
 
 // import SpeechAndroid from 'react-native-android-voice';
 // import {TextToSpeech} from 'react-native-watson';
@@ -21,6 +22,7 @@ export default class Example extends Component {
     m: {},
     measure: [],
     fridgeList: [],
+    agendaList: []
   }
 
   componentWillMount() {
@@ -42,6 +44,22 @@ export default class Example extends Component {
       })
   }
 
+  componentDidMount() {
+    fetch(`http://192.168.1.123:4000/getAgenda/${firebase.auth().currentUser.uid}`)
+      .then(response => {
+        if (response.ok) {
+          response.json().then(json => {
+            this.setState({
+              agendaList: json,
+            })
+          });
+        }
+        else {
+          console.log("NU");
+        }
+      });
+  }
+
   onPressButton(meal, bck) {
     var ingred = Object.keys(meal).map(function(key) {
       if ( meal[key] !== "" && key.includes("strIngredient")){
@@ -61,7 +79,7 @@ export default class Example extends Component {
 
     this.setState({ingredients: ingred, m: meal, measure: meas}, function () {
              this.props.navigation.navigate('Details',
-             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure, back: bck, fridgeList: this.state.fridgeList});
+             { meal: this.state.m, ingredients: this.state.ingredients, measure: this.state.measure, back: bck, fridgeList: this.state.fridgeList, agenda: this.state.agendaList});
         });
 }
 

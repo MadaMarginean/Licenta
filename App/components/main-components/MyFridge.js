@@ -1,7 +1,8 @@
 import React, { Component} from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, Image, TouchableHighlight, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Image, TouchableHighlight, AsyncStorage, Alert } from 'react-native';
 import { Icon, Container, Content, Header, Left } from 'native-base';
 import { List, ListItem } from 'react-native-elements';
+import * as firebase from 'firebase';
 
 import MainHeader from '../utils/Header';
 import DrawerIcon from '../utils/DrawerIcon';
@@ -16,19 +17,35 @@ export default class MyFridge extends Component {
   }
 
   componentWillMount() {
-    fetch('http://192.168.1.123:4000/getIngredientsInFridge')
-      .then(response => {
-        if (response.ok) {
-          response.json().then(json => {
-            this.setState({
-              fridgeList: json,
-            })
-          });
-        }
-        else {
-          console.log("NU");
-        }
-      });
+    if(firebase.auth().currentUser === null) {
+      Alert.alert(
+        'You are not logged.',
+        '',
+        [
+          {text: 'Login', onPress: () => this.goToLogin()},
+        ],
+        { cancelable: false }
+      )
+    }
+    else {
+      fetch('http://192.168.1.123:4000/getIngredientsInFridge')
+        .then(response => {
+          if (response.ok) {
+            response.json().then(json => {
+              this.setState({
+                fridgeList: json,
+              })
+            });
+          }
+          else {
+            console.log("NU");
+          }
+        });
+      }
+  }
+
+  goToLogin() {
+    this.props.navigation.navigate('Login');
   }
 
   fetchForUpdate = () => {

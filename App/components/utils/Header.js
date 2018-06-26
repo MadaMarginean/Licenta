@@ -13,10 +13,10 @@ export default class MainHeader extends Component {
     console.ignoredYellowBox = [
       'Setting a timer'
     ];
-    this.state = {
-      isLogged: props.navigation.state.params!==undefined && props.navigation.state.params.isLogged ?
-        props.navigation.state.params.isLogged : false
-    }
+    // this.state = {
+    //   isLogged: props.navigation.state.params!==undefined && props.navigation.state.params.isLogged ?
+    //     props.navigation.state.params.isLogged : false
+    // }
   }
 
   signOutUser = async () => {
@@ -60,14 +60,14 @@ export default class MainHeader extends Component {
           {this.props.navigation.state.routeName == 'Home' ?
           <Right>
             <Icon
-              name={this.state.isLogged===false ? 'ios-contact' : 'ios-log-out'}
+              name={firebase.auth().currentUser === null ? 'ios-contact' : 'ios-log-out'}
               style={{marginTop: 20}}
-              onPress={() => this.state.isLogged===false ? this.signOutUser() : this.signInUser()}
+              onPress={() => firebase.auth().currentUser !== null ? this.signOutUser() : this.signInUser()}
             />
             <TouchableOpacity
-              onPress={() => this.state.isLogged===false ? this.signOutUser() : this.signInUser()}
+              onPress={() => firebase.auth().currentUser !== null ? this.signOutUser() : this.signInUser()}
             >
-              {this.state.isLogged===false ?
+              {firebase.auth().currentUser === null ?
                 <Text> Sign In</Text> :
                 <Text> Sign Out</Text>}
             </TouchableOpacity>

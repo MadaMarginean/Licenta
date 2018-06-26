@@ -13,6 +13,8 @@ import Recipes from './components/main-components/Recipes';
 import Deserts from './components/main-components/Deserts';
 import MyList from './components/main-components/MyList';
 import MyFridge from './components/main-components/MyFridge';
+import Agenda from './components/main-components/AgendaPage';
+import CalendarComponent from './components/main-components/CalendarComponent';
 import DrawerIcon from './components/utils/DrawerIcon';
 import ImageHeader from './components/utils/ImageHeader';
 import MealPage from './components/main-components/MealPage';
@@ -58,13 +60,19 @@ const MyApp = DrawerNavigator(
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="ios-star" size={24} />),
       },
-
     },
     MyFridge: {
       path: '/myfridge',
       screen: MyFridge,
       navigationOptions: {
         drawerIcon: () => (<DrawerIcon iconName="list" size={24} />),
+      },
+    },
+    Agenda: {
+      path: '/agenda',
+      screen: Agenda,
+      navigationOptions: {
+        drawerIcon: () => (<DrawerIcon iconName="ios-bookmarks" size={24} />),
       },
     },
     Contact: {
@@ -93,6 +101,14 @@ const MyApp = DrawerNavigator(
     Details: {
       path: '/details',
       screen: MealPage,
+      navigationOptions: {
+        drawerIcon: () => null,
+        drawerLabel: () => null
+      },
+    },
+    CalendarComponent: {
+      path: '/calendar',
+      screen: CalendarComponent,
       navigationOptions: {
         drawerIcon: () => null,
         drawerLabel: () => null

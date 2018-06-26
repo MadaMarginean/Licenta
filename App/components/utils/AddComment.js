@@ -16,6 +16,7 @@ import {
 import { Constants, Speech, Video, ImagePicker} from 'expo';
 import Accordion from 'react-native-collapsible/Accordion';
 import Lightbox from 'react-native-lightbox';
+import * as firebase from 'firebase';
 
 const SECTIONS = [
   {
@@ -218,7 +219,7 @@ class AddComment extends Component {
           <View key={i} style={styles.dataList}>
             <View style={{width: 350, backgroundColor: i%2==0 ? '#F0F0F0' : '#FFFFFF', position: 'relative'}}>
             <View style={{width: 280, backgroundColor: i%2==0 ? '#F0F0F0' : '#FFFFFF'}}>
-              <Text style={{fontWeight: 'bold', fontSize: 16}}>Name</Text>
+              <Text style={{fontWeight: 'bold', fontSize: 16}}>{firebase.auth().currentUser.email}</Text>
               <Text>{data.comment}</Text>
               </View>
                 <Lightbox

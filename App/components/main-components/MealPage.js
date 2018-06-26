@@ -292,6 +292,10 @@ export default class MealPage extends Component {
     setTimeout(() => this.alarm(), 10000)
   }
 
+  calendar() {
+    this.props.navigation.navigate('CalendarComponent', {meal: this.props.navigation.state.params.meal.strMeal, agenda: this.props.navigation.state.params});
+  }
+
   alarm() {
      Vibration.vibrate(10000) ;
 
@@ -324,6 +328,7 @@ export default class MealPage extends Component {
   render() {
     let props = this.props.navigation.state.params;
     const { width } = Dimensions.get('window');
+    console.log("!", this.props.navigation.state.params)
 
     return (
       <HeaderImageScrollView
@@ -381,7 +386,7 @@ export default class MealPage extends Component {
             </View>
            </TriggeringView>
          </View>
-         {props.back !== 'MyList' ?
+         {props.back !== 'MyList' && firebase.auth().currentUser !== null ?
           <View>
             <TouchableOpacity
               onPress={() => this.saveToFavList(props.meal)}
@@ -397,6 +402,14 @@ export default class MealPage extends Component {
                <View style={{marginLeft:6}}>
                  <DrawerIcon iconName="ios-alarm" size={24} iconColor='white'/>
                  <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>Set timer</Text>
+               </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.calendar()}
+              style={styles.calendarBtn}>
+               <View style={{marginLeft:6}}>
+                 <DrawerIcon iconName="ios-calendar" size={24} iconColor='white'/>
+                 <Text style={{marginLeft:30, marginTop: 4, fontSize: 16}}>Calendar</Text>
                </View>
             </TouchableOpacity>
             <Toast
@@ -517,7 +530,14 @@ const styles = StyleSheet.create({
     width: 105,
     height: 50,
     backgroundColor: '#893667',
-    marginLeft: 120,
+    marginLeft: 130,
+    marginTop: -50
+  },
+  calendarBtn: {
+    width: 105,
+    height: 50,
+    backgroundColor: '#893667',
+    marginLeft: 10,
     marginTop: -50
   },
   ingredientsContainer: {

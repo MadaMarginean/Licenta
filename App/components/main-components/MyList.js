@@ -14,31 +14,49 @@ export default class MyList extends Component {
   }
 
   componentWillMount() {
-    let uid = firebase.auth().currentUser.uid;
-    try{
-      AsyncStorage.getItem(`myList_${uid}`).then((value) => {
-        if (value !== null) {
-          this.setState({
-            data: JSON.parse(value)
-          })
-        }
-        else {
-          Alert.alert(
-            'Empty list',
-            'You can add a recipe.',
-            [
-              {text: 'Add recipe', onPress: () => this.navigate()},
-              {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-              {text: 'OK', onPress: () => console.log('OK Pressed')},
-            ],
-            { cancelable: false }
-          )
-        }
-      })
+    if(firebase.auth().currentUser === null) {
+      Alert.alert(
+        'You are not logged.',
+        '',
+        [
+          {text: 'Login', onPress: () => this.goToLogin()},
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'OK', onPress: () => console.log('OK Pressed')},
+        ],
+        { cancelable: false }
+      )
     }
-    catch(err) {
-      console.log("Error!");
+    else {
+      let uid = firebase.auth().currentUser.uid;
+      try{
+        AsyncStorage.getItem(`myList_${uid}`).then((value) => {
+          if (value !== null) {
+            this.setState({
+              data: JSON.parse(value)
+            })
+          }
+          else {
+            Alert.alert(
+              'Empty list',
+              'You can add a recipe.',
+              [
+                {text: 'Add recipe', onPress: () => this.navigate()},
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ],
+              { cancelable: false }
+            )
+          }
+        })
+      }
+      catch(err) {
+        console.log("Error!");
+      }
     }
+  }
+
+  goToLogin() {
+    this.props.navigation.navigate('Login');
   }
 
   navigate() {

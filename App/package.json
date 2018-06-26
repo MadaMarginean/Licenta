@@ -29,6 +29,7 @@
     "react-native-add-calendar-event": "^1.1.1",
     "react-native-android-voice": "github:niftytushar/react-native-android-voice",
     "react-native-animatable": "^1.2.4",
+    "react-native-calendars": "^1.19.3",
     "react-native-checkbox-group": "^1.0.3",
     "react-native-checkbox-list": "0.0.6",
     "react-native-checkboxlist": "0.0.8",
