@@ -16,6 +16,7 @@ import MyFridge from './components/main-components/MyFridge';
 import Agenda from './components/main-components/AgendaPage';
 import CalendarComponent from './components/main-components/CalendarComponent';
 import DrawerIcon from './components/utils/DrawerIcon';
+import AddRecipe from './components/utils/AddRecipe';
 import ImageHeader from './components/utils/ImageHeader';
 import MealPage from './components/main-components/MealPage';
 import Login from './components/main-components/Login';
@@ -114,6 +115,14 @@ const MyApp = DrawerNavigator(
         drawerLabel: () => null
       },
     },
+    AddRecipe: {
+    path: '/addRecipe',
+    screen: AddRecipe,
+    navigationOptions: {
+      drawerIcon: () => null,
+      drawerLabel: () => null
+    },
+  },
   },
   {
     initialRouteName: 'Home',

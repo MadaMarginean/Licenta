@@ -45,19 +45,21 @@ export default class Example extends Component {
   }
 
   componentDidMount() {
-    fetch(`http://192.168.1.123:4000/getAgenda/${firebase.auth().currentUser.uid}`)
-      .then(response => {
-        if (response.ok) {
-          response.json().then(json => {
-            this.setState({
-              agendaList: json,
-            })
-          });
-        }
-        else {
-          console.log("NU");
-        }
-      });
+    if(firebase.auth().currentUser){
+      fetch(`http://192.168.1.123:4000/getAgenda/${firebase.auth().currentUser.uid}`)
+        .then(response => {
+          if (response.ok) {
+            response.json().then(json => {
+              this.setState({
+                agendaList: json,
+              })
+            });
+          }
+          else {
+            console.log("NU");
+          }
+        });
+    }
   }
 
   onPressButton(meal, bck) {
