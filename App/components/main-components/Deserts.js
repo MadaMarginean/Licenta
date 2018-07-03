@@ -41,7 +41,7 @@ export default class Deserts extends Component {
   }
 
   goToAddRecipe() {
-    this.props.navigation.navigate('AddRecipe'/*, {isLogged: true}*/);
+    this.props.navigation.navigate('AddRecipe', {route: 'desert', lastId: this.state.data.length});
   }
 
   searchFilterFunction(text){

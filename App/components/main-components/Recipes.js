@@ -54,7 +54,7 @@ export default class Recipes extends Component {
  }
 
  goToAddRecipe() {
-   this.props.navigation.navigate('AddRecipe'/*, {isLogged: true}*/);
+   this.props.navigation.navigate('AddRecipe', {route: 'meal', lastId: this.state.data.length});
  }
 
   render() {

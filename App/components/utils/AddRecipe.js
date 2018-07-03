@@ -2,6 +2,7 @@ import React, { Component} from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, Image, TouchableHighlight, AsyncStorage, Alert } from 'react-native';
 import { Icon, Container, Content, Header, Left } from 'native-base';
 import { List, ListItem } from 'react-native-elements';
+import Toast, {DURATION} from 'react-native-easy-toast';
 import * as firebase from 'firebase';
 
 import MainHeader from '../utils/Header';
@@ -10,34 +11,35 @@ import Logo from '../../assets/purpleLogoText.png';
 
 export default class AddRecipe extends Component {
   state = {
-    strMeal: '',
-    strArea: '',
-    strCategory: '',
-    strInstructions: '',
-    strMealThumb: '',
-    strSource: '',
-    strTags: '',
-    strYoutube: '',
-    strIngredient1: '',
-    strIngredient2: '',
-    strIngredient3: '',
-    strIngredient4: '',
-    strIngredient5: '',
-    strIngredient6: '',
-    strIngredient7: '',
-    strIngredient8: '',
-    strIngredient9: '',
-    strIngredient10: '',
-    strMeasure1: '',
-    strMeasure2: '',
-    strMeasure3: '',
-    strMeasure4: '',
-    strMeasure5: '',
-    strMeasure6: '',
-    strMeasure7: '',
-    strMeasure8: '',
-    strMeasure9: '',
-    strMeasure10: '',
+    minutes: "1 min",
+    strMeal: 'Shrimp Chow Fun',
+    strArea: 'Chinese',
+    strCategory: 'Seafood',
+    strInstructions: "STEP 1 - SOAK THE RICE NOODLES\r\nSoak the rice noodles overnight untill they are soft\r\nSTEP 2 - BOIL THE RICE NOODLES\r\nBoil the noodles for 10-15 minutes and then rinse with cold water to stop the cooking process of the noodles.\r\nSTEP 3 -MARINATING THE SHRIMP\r\nIn a bowl add the shrimp, egg, 1 pinch of white pepper, 1 Teaspoon of sesame seed oil, 1 Tablespoon corn starch and 1 tablespoon of oil\r\nMix together well\r\nSTEP 4 - STIR FRY\r\nIn a wok add 2 Tablespoons of oil, shrimp and stir fry them until it is golden brown\r\nSet the shrimp aside\r\nAdd 1 Tablespoon of oil to the work and then add minced garlic, ginger and all of the vegetables.\r\nAdd the noodles to the wok\r\nNext add sherry cooking wine, oyster sauce, sugar, vinegar, sesame seed oil, 1 pinch white pepper, and soy sauce\r\nAdd back in the shrimp\r\nTo thicken the sauce, whisk together 1 Tablespoon of corn starch and 2 Tablespoon of water in a bowl and slowly add to your stir-fry until it's the right thickness.",
+    strMealThumb: 'https://www.themealdb.com/images/media/meals/1529445434.jpg',
+    strSource: 'https://sueandgambo.com/pages/shrimp-chow-fun',
+    strTags: 'Fish,Seafood,Dairy,Pie',
+    strYoutube: 'https://www.youtube.com/watch?v=wzaTcpoFEaY',
+    strIngredient1: 'Rice Stick Noodles',
+    strIngredient2: 'Prawns',
+    strIngredient3: 'Egg',
+    strIngredient4: 'Pepper',
+    strIngredient5: 'Sesame Seed Oil',
+    strIngredient6: 'Cornstarch',
+    strIngredient7: 'Oil',
+    strIngredient8: 'Minced Garlic',
+    strIngredient9: 'Ginger',
+    strIngredient10: 'Onion',
+    strMeasure1: '1/2 bag',
+    strMeasure2: '8 oz',
+    strMeasure3: '1/2',
+    strMeasure4: 'pinch',
+    strMeasure5: '2 tsp',
+    strMeasure6: '2 tbs',
+    strMeasure7: '4 tbs',
+    strMeasure8: '1 tsp',
+    strMeasure9: '1 tsp',
+    strMeasure10: '1/2 cup',
     list: [],
     fridgeList: []
   }
@@ -60,6 +62,10 @@ export default class AddRecipe extends Component {
 
   changeMealThub(strMealThumb) {
     this.setState({strMealThumb});
+  }
+
+  changeMinutes(minutes) {
+    this.setState({minutes});
   }
 
   changeSource(strSource) {
@@ -136,8 +142,113 @@ export default class AddRecipe extends Component {
     this.setState({strMeasure10});
   }
 
+  notify() {
+    let headers = {
+      'accept': 'application/json',
+      'accept-encoding': 'gzip, deflate',
+      'content-type': 'application/json'
+    }
+
+    let data = {
+      "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
+      "sound": "default",
+      "body": "A new recipe was added."
+    };
+
+    return fetch('https://exp.host/--/api/v2/push/send', {
+     method: "POST",
+     headers: headers,
+     body:  JSON.stringify(data)
+   })
+   .then(function(response){
+     return response.json();
+   })
+   .then(function(data){
+    console.log(data);
+    });
+  }
+
+  buttonPressed() {
+    let id = this.props.navigation.state.params.lastId.toString();
+    console.log("id", id);
+
+    this.refs.toast.show('Successfully added.');
+
+    var headers= {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+    }
+
+    var data = {
+      "idMeal": id,//this.state.fridgeList !== undefined ? (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString() : "0",
+      "dateModified": null,
+      "strCategory": this.state.strCategory,
+      "strArea": this.state.strArea,
+      "strIngredient1": this.state.strIngredient1,
+      "strIngredient2": this.state.strIngredient2,
+      "strIngredient3": this.state.strIngredient3,
+      "strIngredient4": this.state.strIngredient4,
+      "strIngredient5": this.state.strIngredient5,
+      "strIngredient6": this.state.strIngredient6,
+      "strIngredient7": this.state.strIngredient7,
+      "strIngredient8": this.state.strIngredient8,
+      "strIngredient9": this.state.strIngredient9,
+      "strIngredient10": this.state.strIngredient10,
+      "strIngredient11": "",
+      "strIngredient12": "",
+      "strIngredient13": "",
+      "strIngredient14": "",
+      "strIngredient15": "",
+      "strIngredient16": "",
+      "strIngredient17": "",
+      "strIngredient18": "",
+      "strIngredient19": "",
+      "strIngredient20": "",
+      "strInstructions": this.state.strInstructions,
+      "strMeal": this.state.strMeal,
+      "strMealThumb": this.state.strMealThumb,
+      "strMeasure1": this.state.strMeasure1,
+      "strMeasure2": this.state.strMeasure2,
+      "strMeasure3": this.state.strMeasure3,
+      "strMeasure4": this.state.strMeasure4,
+      "strMeasure5": this.state.strMeasure5,
+      "strMeasure6": this.state.strMeasure6,
+      "strMeasure7": this.state.strMeasure7,
+      "strMeasure8": this.state.strMeasure8,
+      "strMeasure9": this.state.strMeasure9,
+      "strMeasure10": this.state.strMeasure10,
+      "strMeasure11": "",
+      "strMeasure12": "",
+      "strMeasure13": "",
+      "strMeasure14": "",
+      "strMeasure15": "",
+      "strMeasure16": "",
+      "strMeasure17": "",
+      "strMeasure18": "",
+      "strMeasure19": "",
+      "strMeasure20": "",
+      "strSource": this.state.strSource,
+      "strTags": this.state.strTags,
+      "strYoutube": this.state.strYoutube
+    }
+
+    //  return fetch(`http://192.168.1.123:4000/${this.props.navigation.state.params.route}`, {
+    //    method: "POST",
+    //    headers: headers,
+    //    body:  JSON.stringify(data)
+    //  })
+    //  .then(function(response){
+    //    this.notify();
+    //    console.log("Its connected");
+    //    return response.json();
+    //  }.bind(this))
+    //  .then(function(data){
+    //   console.log(data);
+    // });
+  }
 
   render() {
+    console.log(this.props);
     return(
       <Container>
         <MainHeader navigation={this.props.navigation}/>
@@ -146,6 +257,9 @@ export default class AddRecipe extends Component {
             source={Logo}
             style={{marginTop: 0}}
           />
+          <View>
+          <Text style={styles.title}>Add a new recipe</Text>
+          </View>
           <ScrollView style={{width: '100%'}}>
             <TextInput
               multiLine={true}
@@ -174,6 +288,13 @@ export default class AddRecipe extends Component {
               placeholder='Instructions'
               value={this.state.strInstructions}
               onChangeText={(strInstructions) => this.changeInstructions(strInstructions)}
+            />
+            <TextInput
+              multiLine={true}
+              style={[styles.input, styles.textArea]}
+              placeholder='Time'
+              value={this.state.minutes}
+              onChangeText={(minutes) => this.changeMinutes(minutes)}
             />
             <TextInput
               multiLine={true}
@@ -345,7 +466,22 @@ export default class AddRecipe extends Component {
               value={this.state.strMeasure10}
               onChangeText={(strMeasure10) => this.changeMeas10(strMeasure10)}
             />
+            <TouchableHighlight
+              style={styles.button}
+              onPress={() => this.buttonPressed()}>
+                <Text style={styles.textButton}>Add</Text>
+            </TouchableHighlight>
           </ScrollView>
+          <Toast
+            ref="toast"
+            style={{backgroundColor:'black'}}
+            position='top'
+            positionValue={200}
+            fadeInDuration={750}
+            fadeOutDuration={1000}
+            opacity={0.8}
+            textStyle={{color:'white'}}
+          />
         </Content>
       </Container>
     );
@@ -364,6 +500,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
+    color: 'white',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -377,6 +514,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   inputI: {
+    color: 'white',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -387,6 +525,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   inputM: {
+    color: 'white',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
@@ -397,5 +536,22 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 10,
     marginBottom: 3,
+  },
+  title: {
+    fontSize: 36,
+    color: '#893667',
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  button: {
+    backgroundColor: '#893667',
+    paddingTop: 15,
+    paddingBottom: 15,
+    width: '100%',
+  },
+  textButton: {
+    textAlign: 'center',
+    color: 'white'
   },
 });

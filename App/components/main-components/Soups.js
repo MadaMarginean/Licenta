@@ -41,7 +41,7 @@ export default class Soups extends Component {
   }
 
   goToAddRecipe() {
-    this.props.navigation.navigate('AddRecipe'/*, {isLogged: true}*/);
+    this.props.navigation.navigate('AddRecipe', {route: 'soup', lastId: this.state.data.length});
   }
 
   searchFilterFunction(text){

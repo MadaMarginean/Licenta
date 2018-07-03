@@ -77,18 +77,6 @@ export default class MealPage extends Component {
    });
  };
 
- // stt = () => {
- //  SpeechToText.initialize("48db7730-e9ef-49a6-b5e7-35fcf44fbfbe", "Rj0ylSnPf4xm")
- //   SpeechToText.startStreaming((error, this.state.text) =>
- //           {
- //               console.log(this.state.text)
- //           }));
- //
- // const complete = () => {
- //   this.state.inProgress && this.setState({ inProgress: false });
- // };
- //  };
-
  onNavigationStateChange = navState => {
     if (navState.url.indexOf('https://www.google.com') === 0) {
       const regex = /#access_token=(.+)/;
@@ -148,27 +136,6 @@ export default class MealPage extends Component {
     }
   }
 
-  // delete(data, back) {
-  //   // console.log("apasat", data);
-  //   var array = this.state.list;
-  //   var index = array.indexOf(data);
-  //
-  //   array.splice(index, 1);
-  //   this.setState({list: array});
-  //
-  //   try {
-  //     AsyncStorage.setItem(`myList_${uid}`, JSON.stringify(array))
-  //       .then(() => {
-  //         // this.setState({list: array});
-  //         this.props.navigation.navigate(back);
-  //         this.props.favList.push(array)
-  //       })
-  //   }
-  //   catch(err) {
-  //     console.log("error", err);
-  //   }
-  // }
-
   _renderHeader(section) {
     return (
       <View style={styles.headerr}>
@@ -177,29 +144,6 @@ export default class MealPage extends Component {
     );
   }
 
-  // checkExistsInFridge(text) {
-  //   const newData = this.state.fridgeList.filter(function(item){
-  //     const itemData = item.ingredient.toLowerCase()
-  //     const textData = text.toLowerCase()
-  //         if(itemData.search(textData) !== -1) {
-  //           return true;
-  //         }
-  //         else {
-  //           return false;
-  //         }
-  //   }
-  // }
-
-
-  // componentDidMount() {
-  //   // console.log('vaaal', val, this.state.fridgeList, this.state.fridgeList.some(item => val === item.ingredient))
-  //     // props.ingredients.map((val, index) =>
-  //   this.setState({checked: this.props.navigation.state.params.ingredients.map((val, index) =>this.state.fridgeList.some(item => val === item.ingredient))})
-  // }
-  //
-  // updateChecked() {
-  //   this.setState({checked: this.props.navigation.state.params.ingredients.map((val, index) =>this.state.fridgeList.some(item => val === item.ingredient))})
-  // }
   fetchForUpdate = () => {
     fetch('http://192.168.1.123:4000/getIngredientsInFridge')
       .then(response => {
@@ -289,7 +233,8 @@ export default class MealPage extends Component {
 
   setAlarm() {
     this.refs.toast.show('Reminder saved');
-    setTimeout(() => this.alarm(), 10000)
+    console.log("set alarm");
+    setTimeout(() => this.alarm(), 50000)
   }
 
   calendar() {
@@ -297,7 +242,8 @@ export default class MealPage extends Component {
   }
 
   alarm() {
-     Vibration.vibrate(10000) ;
+     Vibration.vibrate(50000) ;
+     console.log("vibration");
 
      let headers = {
        'accept': 'application/json',
@@ -308,7 +254,7 @@ export default class MealPage extends Component {
      let data = {
        "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
        "sound": "default",
-       "body": "The user with the email address denisa.m@yahoo.com was authenticated."
+       "body": "The food should be removed from oven/fridge."
      };
 
      return fetch('https://exp.host/--/api/v2/push/send', {
@@ -323,6 +269,16 @@ export default class MealPage extends Component {
     .then(function(data){
      console.log(data);
    });
+  }
+
+  _stop = () => {
+    this.setState({ inProgress: false });
+    Speech.stop();
+  };
+
+  goBack() {
+    this._stop();
+    this.props.navigation.navigate(this.props.navigation.state.params.back);
   }
 
   render() {
@@ -344,7 +300,7 @@ export default class MealPage extends Component {
           <View style={{width: 50, height: 50, marginTop:20}}>
             <Button
               title='<'
-              onPress={() => this.props.navigation.navigate(props.back)}
+              onPress={() => this.goBack()}
               color='rgba(0,0,0,0)'
               />
             </View>

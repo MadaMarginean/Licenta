@@ -69,6 +69,29 @@ class Register extends Component {
 
   checkBusiness(email, password) {
     this.props.navigation.navigate('Login');
+    let headers = {
+      'accept': 'application/json',
+      'accept-encoding': 'gzip, deflate',
+      'content-type': 'application/json'
+    }
+
+    let data = {
+      "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
+      "sound": "default",
+      "body": `New user regitered. Email: ${email}.`
+    };
+
+    return fetch('https://exp.host/--/api/v2/push/send', {
+     method: "POST",
+     headers: headers,
+     body:  JSON.stringify(data)
+   })
+   .then(function(response){
+     return response.json();
+   })
+   .then(function(data){
+    console.log(data);
+    });
   }
 
   changeEmail(email) {
@@ -108,7 +131,6 @@ class Register extends Component {
     if (a.email && a.password) {
       ref.push(a);
     }
-
   }
 
   skip() {
