@@ -12,34 +12,34 @@ import Logo from '../../assets/purpleLogoText.png';
 export default class AddRecipe extends Component {
   state = {
     minutes: "1 min",
-    strMeal: 'Shrimp Chow Fun',
-    strArea: 'Chinese',
-    strCategory: 'Seafood',
-    strInstructions: "STEP 1 - SOAK THE RICE NOODLES\r\nSoak the rice noodles overnight untill they are soft\r\nSTEP 2 - BOIL THE RICE NOODLES\r\nBoil the noodles for 10-15 minutes and then rinse with cold water to stop the cooking process of the noodles.\r\nSTEP 3 -MARINATING THE SHRIMP\r\nIn a bowl add the shrimp, egg, 1 pinch of white pepper, 1 Teaspoon of sesame seed oil, 1 Tablespoon corn starch and 1 tablespoon of oil\r\nMix together well\r\nSTEP 4 - STIR FRY\r\nIn a wok add 2 Tablespoons of oil, shrimp and stir fry them until it is golden brown\r\nSet the shrimp aside\r\nAdd 1 Tablespoon of oil to the work and then add minced garlic, ginger and all of the vegetables.\r\nAdd the noodles to the wok\r\nNext add sherry cooking wine, oyster sauce, sugar, vinegar, sesame seed oil, 1 pinch white pepper, and soy sauce\r\nAdd back in the shrimp\r\nTo thicken the sauce, whisk together 1 Tablespoon of corn starch and 2 Tablespoon of water in a bowl and slowly add to your stir-fry until it's the right thickness.",
-    strMealThumb: 'https://www.themealdb.com/images/media/meals/1529445434.jpg',
+    strMeal: 'Thai Green Curry',
+    strArea: 'Thai',
+    strCategory: 'Chicken',
+    strInstructions: "Put the potatoes in a pan of boiling water and cook for 5 minutes. Throw in the beans and cook for a further 3 minutes, by which time both should be just tender but not too soft. Drain and put to one side.\r\nIn a wok or large frying pan, heat the oil until very hot, then drop in the garlic and cook until golden, this should take only a few seconds. Don’t let it go very dark or it will spoil the taste. Spoon in the curry paste and stir it around for a few seconds to begin to cook the spices and release all the flavours. Next, pour in the coconut milk and let it come to a bubble.\r\nStir in the fish sauce and sugar, then the pieces of chicken. Turn the heat down to a simmer and cook, covered, for about 8 minutes until the chicken is cooked.\r\nTip in the potatoes and beans and let them warm through in the hot coconut milk, then add a lovely citrussy flavour by stirring in the shredded lime leaves (or lime zest). The basil leaves go in next, but only leave them briefly on the heat or they will quickly lose their brightness. Scatter with the lime garnish and serve immediately with boiled rice.",
+    strMealThumb: 'https://www.themealdb.com/images/media/meals/sstssx1487349585.jpg',
     strSource: 'https://sueandgambo.com/pages/shrimp-chow-fun',
-    strTags: 'Fish,Seafood,Dairy,Pie',
-    strYoutube: 'https://www.youtube.com/watch?v=wzaTcpoFEaY',
-    strIngredient1: 'Rice Stick Noodles',
-    strIngredient2: 'Prawns',
-    strIngredient3: 'Egg',
-    strIngredient4: 'Pepper',
-    strIngredient5: 'Sesame Seed Oil',
-    strIngredient6: 'Cornstarch',
-    strIngredient7: 'Oil',
-    strIngredient8: 'Minced Garlic',
-    strIngredient9: 'Ginger',
-    strIngredient10: 'Onion',
-    strMeasure1: '1/2 bag',
-    strMeasure2: '8 oz',
-    strMeasure3: '1/2',
-    strMeasure4: 'pinch',
-    strMeasure5: '2 tsp',
-    strMeasure6: '2 tbs',
-    strMeasure7: '4 tbs',
+    strTags: 'Curry,Mild',
+    strYoutube: 'https://www.youtube.com/watch?v=LIbKVpBQKJI',
+    strIngredient1: 'potatoes',
+    strIngredient2: 'green beans',
+    strIngredient3: 'sunflower oil',
+    strIngredient4: 'garlic',
+    strIngredient5: 'Thai green curry paste',
+    strIngredient6: 'coconut milk',
+    strIngredient7: 'Thai fish sauce',
+    strIngredient8: 'Sugar',
+    strIngredient9: 'Chicken',
+    strIngredient10: 'lime',
+    strMeasure1: '225g new',
+    strMeasure2: '100g',
+    strMeasure3: '1 tbsp',
+    strMeasure4: '1 clove',
+    strMeasure5: '4 tsp',
+    strMeasure6: '400ml',
+    strMeasure7: '2 tsp',
     strMeasure8: '1 tsp',
-    strMeasure9: '1 tsp',
-    strMeasure10: '1/2 cup',
+    strMeasure9: '450g boneless',
+    strMeasure10: '2 fresh kaffir leaves',
     list: [],
     fridgeList: []
   }
@@ -152,7 +152,7 @@ export default class AddRecipe extends Component {
     let data = {
       "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
       "sound": "default",
-      "body": "A new recipe was added."
+      "body": `A new recipe was added: ${this.state.strMeal}`
     };
 
     return fetch('https://exp.host/--/api/v2/push/send', {
@@ -173,12 +173,11 @@ export default class AddRecipe extends Component {
     console.log("id", id);
 
     this.refs.toast.show('Successfully added.');
-
+    // this.notify();
     var headers= {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
     }
-
     var data = {
       "idMeal": id,//this.state.fridgeList !== undefined ? (parseInt(this.state.fridgeList[this.state.fridgeList.length-1].idIngr) + 1).toString() : "0",
       "dateModified": null,
@@ -232,23 +231,23 @@ export default class AddRecipe extends Component {
       "strYoutube": this.state.strYoutube
     }
 
-    //  return fetch(`http://192.168.1.123:4000/${this.props.navigation.state.params.route}`, {
-    //    method: "POST",
-    //    headers: headers,
-    //    body:  JSON.stringify(data)
-    //  })
-    //  .then(function(response){
-    //    this.notify();
-    //    console.log("Its connected");
-    //    return response.json();
-    //  }.bind(this))
-    //  .then(function(data){
-    //   console.log(data);
-    // });
+     return fetch(`http://192.168.1.123:4000/${this.props.navigation.state.params.route}`, {
+       method: "POST",
+       headers: headers,
+       body:  JSON.stringify(data)
+     })
+     .then(function(response){
+       this.notify();
+       console.log("Its connected");
+       return response.json();
+     }.bind(this))
+     .then(function(data){
+      console.log(data);
+    });
   }
 
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     return(
       <Container>
         <MainHeader navigation={this.props.navigation}/>

@@ -43,11 +43,11 @@ class Login extends Component {
 
                 for(var i = 0; i< keys.length; i++) {
                   var k = keys[i];
-                  console.log("users", users)
+                  // console.log("users", users)
                   items.push(users[k]);
                 }
                 this.setState({businessClients: items});
-                console.log(this.state.businessClients);
+                // console.log(this.state.businessClients);
               });
   }
 

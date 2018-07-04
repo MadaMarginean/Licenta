@@ -51,20 +51,21 @@ class Register extends Component {
     let finalStatus = status;
 
     //if it doesn't exist
-    if(status !== 'garanted') {
+    if(status !== 'granted') {
       const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS);
       finalStatus = status;
     }
 
-    if(status !== 'garanted') {
+    if(status !== 'granted') {
       return ;
     }
 
     let token = await Notifications.getExpoPushTokenAsync();
-    let uid = firebase.auth().currentUser.uid;
-    firebase.database().ref("/Users").child(uid).update({
-      expoPushToken: token
-    });
+    // let uid = firebase.auth().currentUser.uid;
+    // firebase.database().ref("/Users").child(uid).update({
+    //   expoPushToken: token
+    // });
+    console.log("token", token);
   }
 
   checkBusiness(email, password) {
@@ -76,7 +77,7 @@ class Register extends Component {
     }
 
     let data = {
-      "to": "ExponentPushToken[bA_VlPE-r8-DQUnBA7jI7p]",
+      "to": "ExponentPushToken[Olu0mEOqlhfauMId2c2qM1]",
       "sound": "default",
       "body": `New user regitered. Email: ${email}.`
     };
@@ -162,7 +163,7 @@ class Register extends Component {
             </TouchableHighlight>
             <TouchableHighlight
               style={{alignItems: 'center', marginTop: 120}}
-              onPress={() => this.skip()}
+              onPress={() => this.registerForPushNotifications()}
             >
               <Text style={styles.auth}>Start without authentication</Text>
             </TouchableHighlight>

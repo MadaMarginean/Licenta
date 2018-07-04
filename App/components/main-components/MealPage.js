@@ -31,12 +31,6 @@ const SECTIONS = [
 const PATTERN = [ 1000, 2000, 3000, 4000] ;
 
 export default class MealPage extends Component {
-  // constructor() {
-  //   console.ignoredYellowBox = [
-  //     'Possible Unhandled Promise Rejection'
-  //   ];
-  // }
-
   state = {
     language: "en",
     text: "Vegetable Stock",
@@ -48,15 +42,15 @@ export default class MealPage extends Component {
     checked: []
   }
 
-  _buttonClick = async() => {
-    try{
-        console.log(SpeechAndroid);
-        var spokenText = await SpeechAndroid.startSpeech("Speak", SpeechAndroid.EN);
-        ToastAndroid.show(spokenText , ToastAndroid.LONG);
-    }catch(error){
-      console.log("ERR", error);
-    }
-  }
+  // _buttonClick = async() => {
+  //   try{
+  //       console.log(SpeechAndroid);
+  //       var spokenText = await SpeechAndroid.startSpeech("Speak", SpeechAndroid.EN);
+  //       ToastAndroid.show(spokenText , ToastAndroid.LONG);
+  //   }catch(error){
+  //     console.log("ERR", error);
+  //   }
+  // }
 
   _speak = () => {
    const start = () => {
@@ -139,7 +133,7 @@ export default class MealPage extends Component {
   _renderHeader(section) {
     return (
       <View style={styles.headerr}>
-        <Text style={styles.headerText}>Shop List</Text>
+        <Text style={styles.headerText}>Shopping List</Text>
       </View>
     );
   }
@@ -233,7 +227,6 @@ export default class MealPage extends Component {
 
   setAlarm() {
     this.refs.toast.show('Reminder saved');
-    console.log("set alarm");
     setTimeout(() => this.alarm(), 50000)
   }
 
@@ -243,7 +236,6 @@ export default class MealPage extends Component {
 
   alarm() {
      Vibration.vibrate(50000) ;
-     console.log("vibration");
 
      let headers = {
        'accept': 'application/json',

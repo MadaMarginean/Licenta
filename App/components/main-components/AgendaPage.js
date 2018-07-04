@@ -104,7 +104,7 @@ export default class Agenda extends Component {
   }
 
   render() {
-    console.log('propsss', this.props);
+    // console.log('propsss', this.props);
     return (
       <Container>
         <MainHeader navigation={this.props.navigation}/>
